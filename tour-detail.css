@@ -1,0 +1,489 @@
+/* ===================== TOUR DETAIL PAGE ===================== */
+
+.td-breadcrumb-intro .trail a {
+  color: var(--cyan);
+}
+
+.td-breadcrumb-intro .trail a:hover {
+  text-decoration: underline;
+}
+
+.td-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 36px;
+  align-items: start;
+}
+
+.td-main {
+  min-width: 0;
+}
+
+.td-hero-photo {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  height: 380px;
+  margin-bottom: 24px;
+}
+
+.td-hero-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.td-hero-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(7, 27, 36, .75);
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+
+.td-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.td-tags span {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(66, 200, 239, .12);
+  color: var(--cyan);
+}
+
+.td-tags span.tag-highlight {
+  background: var(--cyan);
+  color: var(--ink);
+}
+
+.td-block {
+  margin-bottom: 32px;
+}
+
+.td-block h3 {
+  font-size: 20px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.td-block .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.td-block p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--soft);
+}
+
+.td-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.td-info-card {
+  background: var(--glass-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.td-info-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.td-info-card p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--white);
+  line-height: 1.5;
+}
+
+.td-itinerary {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.td-day {
+  position: relative;
+  padding: 0 0 26px 32px;
+  border-left: 2px solid var(--border);
+}
+
+.td-day:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.td-day::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--cyan);
+  border: 2px solid var(--dark);
+}
+
+.td-day h4 {
+  font-size: 15.5px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.td-day ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.td-day li {
+  font-size: 14px;
+  color: var(--soft);
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.td-day li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+}
+
+.td-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.td-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.td-list li {
+  font-size: 14px;
+  color: var(--soft);
+  line-height: 1.5;
+  padding-left: 22px;
+  position: relative;
+}
+
+.td-list-yes li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+.td-list-no li::before {
+  content: "✕";
+  position: absolute;
+  left: 0;
+  color: #ff8a8a;
+  font-weight: 700;
+}
+
+.td-sidebar {
+  position: sticky;
+  top: 120px;
+}
+
+.td-book-card {
+  background: var(--glass-2);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 26px;
+}
+
+.td-price {
+  font-family: 'Poppins', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--white);
+  margin-top: 6px;
+}
+
+.td-price-sub {
+  font-size: 13.5px;
+  color: var(--soft);
+  margin-top: 4px;
+}
+
+/* ===================== PAYMENT PROCEDURE ===================== */
+
+.td-payment-policy {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--soft);
+  margin-bottom: 16px;
+}
+
+.td-payment-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.td-payment-card {
+  background: var(--glass-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.td-payment-card .method-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 4px;
+}
+
+.td-payment-card .method-name {
+  font-size: 13.5px;
+  color: var(--white);
+}
+
+.td-payment-card .method-number {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--white);
+  margin-top: 2px;
+  letter-spacing: .02em;
+}
+
+.td-payment-verify {
+  grid-column: 1 / -1;
+  font-size: 12.5px;
+  color: var(--soft);
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .td-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .td-sidebar {
+    position: static;
+  }
+
+  .td-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .td-two-col {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .td-hero-photo {
+    height: 240px;
+  }
+}
+
+.tl-places {
+  font-size: 12px;
+  color: #666;
+  margin: 8px 0;
+}
+
+.places-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.place-tag {
+  background: #f0f7ff;
+  color: #0a1f3a;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* ===================== TOUR LISTING / CARDS / MODAL / PAGINATION ===================== */
+
+.tour-grid-listing {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.tl-card {
+  background: #363c3f;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #2f3f48;
+}
+
+.tl-photo {
+  position: relative;
+}
+
+.tl-photo img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.tl-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--cyan);
+  color: #000;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tl-body {
+  padding: 16px;
+  color: #fff;
+}
+
+.tl-body h4 {
+  margin: 8px 0;
+}
+
+.tl-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #2f3f48;
+}
+
+.tl-price {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.tl-price span {
+  display: block;
+  font-size: 11px;
+  color: #aaa;
+}
+
+.tl-view-btn {
+  background: var(--cyan);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.modal-overlay.show {
+  display: block;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.pagination button.active {
+  background-color: var(--cyan);
+  color: #fff;
+  border-color: var(--cyan);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button.page-arrow {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 8px 12px;
+}
+
+/* Change button background to Cyan */
+.tm-book-btn, 
+.modal-whatsapp-btn {
+  background-color: #00ffff; /* Standard Cyan */
+  color: #0b132b;            /* Dark text for readable contrast */
+  border: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Optional: Hover & Active States */
+.tm-book-btn:hover, 
+.modal-whatsapp-btn:hover {
+  background-color: #00e5e5; /* Slightly darker cyan on hover */
+  transform: translateY(-2px);
+}
