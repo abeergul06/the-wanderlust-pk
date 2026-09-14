@@ -614,14 +614,14 @@ async function loadFeedback() {
     container.innerHTML = renderTable(['Name', 'Rating', 'Message', 'Published', 'Submitted', ''], feedback.map((f) => [
       escapeHtml(f.name), f.rating ? '★'.repeat(f.rating) : '—',
       `<div style="max-width:320px;">${escapeHtml(f.message)}</div>`,
-      `<label><input type="checkbox" ${f.is_approved ? 'checked' : ''} onchange="toggleApproval('${f.id}', this.checked)" style="width:auto;" /></label>`,
+      `<label><input type="checkbox" ${f.approved ? 'checked' : ''} onchange="toggleApproval('${f.id}', this.checked)" style="width:auto;" /></label>`,
       fmtDate(f.createdAt),
       `<button class="btn btn-danger btn-sm" onclick="deleteRow('feedback', '${f.id}')">Delete</button>`,
     ]));
   } catch (err) { toast(err.message, true); }
 }
-async function toggleApproval(id, is_approved) {
-  try { await apiRequest(`/admin/feedback/${id}`, { method: 'PATCH', body: { is_approved } }); toast(is_approved ? 'Published as testimonial.' : 'Unpublished.'); }
+async function toggleApproval(id, approved) {
+  try { await apiRequest(`/admin/feedback/${id}`, { method: 'PATCH', body: { approved } }); toast(approved ? 'Published as testimonial.' : 'Unpublished.'); }
   catch (err) { toast(err.message, true); loadFeedback(); }
 }
 
