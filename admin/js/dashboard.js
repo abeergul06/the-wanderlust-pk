@@ -50,6 +50,12 @@ function escapeHtml(str) {
 }
 function fmtDate(d) { return d ? new Date(d).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }) : '—'; }
 function fmtMoney(n) { return n == null ? '—' : `Rs. ${Number(n).toLocaleString()}`; }
+function renderTable(headers, rows) {
+  return `<table><thead><tr>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+function emptyState(msg) { return `<div class="empty-state">${msg}</div>`; }
+function statusBadge(status) { return `<span class="badge badge-${status}">${status}</span>`; }
 
 // ========= TOUR ITINERARY GLOBALS =========
 let tourDayCount = 0;
@@ -71,6 +77,71 @@ function addTourDayField(day = {title: '', description: ''}) {
 }
 
 // ============================================================
+// OVERVIEW
+// ============================================================
+async function loadOverview() {
+  try {
+    const stats = await apiRequest('/admin/stats');
+    document.getElementById('stat-grid').innerHTML = [
+      ['Packages', stats.packages], ['Destinations', stats.destinations],
+      ['Tours', stats.tours], ['Gallery photos', stats.gallery],
+      ['Total bookings', stats.bookings], ['Pending bookings', stats.pendingBookings],
+      ['Feedback received', stats.feedback], ['Unread messages', stats.unreadContact],
+    ].map(([label, num]) => `<div class="stat-card"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
+
+    const { bookings } = await apiRequest('/admin/bookings');
+    const recent = bookings.slice(0, 5);
+    document.getElementById('overview-recent-bookings').innerHTML = recent.length
+      ? renderTable(['Name', 'Trip', 'Status', 'Date'], recent.map((b) => [
+          escapeHtml(b.name), escapeHtml(b.packages?.title || b.destination || '—'),
+          statusBadge(b.status), fmtDate(b.createdAt),
+        ]))
+      : emptyState('No bookings yet.');
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================
+// PACKAGES
+// ============================================================
+let packagesCache = [];
+let destinationsCache = [];
+
+async function loadPackages() {
+  try {
+    if (!destinationsCache.length) await apiRequest('/admin/destinations').then((r) => (destinationsCache = r.destinations));
+    const { packages } = await apiRequest('/admin/packages');
+    packagesCache = packages;
+    const container = document.getElementById('packages-table');
+    if (!packages.length) return (container.innerHTML = emptyState('No packages yet.'));
+    container.innerHTML = renderTable(['Title', 'Category', 'Departure', 'Days', 'Cost', 'Active', ''], packages.map((p) => [
+      escapeHtml(p.title), escapeHtml(p.category || '—'), escapeHtml(p.departure || '—'), p.durationDays,
+      fmtMoney(p.cost),
+      p.isActive ? '<span class="badge badge-approved">Active</span>' : '<span class="badge badge-cancelled">Hidden</span>',
+      `<div class="row-actions"><button class="btn btn-ghost btn-sm" onclick="editPackage('${p.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deletePackage('${p.id}')">Delete</button></div>`,
+    ]));
+  } catch (err) { toast(err.message, true); }
+}
+function editPackage(id){} // add your package form logic here if needed
+async function deletePackage(id){ if(confirm('Delete?')){ await apiRequest(`/admin/packages/${id}`, { method: 'DELETE' }); loadPackages(); }}
+
+// ============================================================
+// DESTINATIONS
+// ============================================================
+async function loadDestinations() {
+  try {
+    const { destinations } = await apiRequest('/admin/destinations');
+    destinationsCache = destinations;
+    const container = document.getElementById('destinations-table');
+    if (!destinations.length) return (container.innerHTML = emptyState('No destinations yet.'));
+    container.innerHTML = renderTable(['Name', 'Region', 'Slug', 'Active', ''], destinations.map((d) => [
+      escapeHtml(d.name), escapeHtml(d.region || '—'), escapeHtml(d.slug),
+      d.active ? '<span class="badge badge-approved">Active</span>' : '<span class="badge badge-cancelled">Hidden</span>',
+      `<div class="row-actions"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm">Delete</button></div>`,
+    ]));
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================
 // TOURS
 // ============================================================
 let toursCache = [];
@@ -80,7 +151,7 @@ async function loadTours() {
     const { tours } = await apiRequest('/admin/tours');
     toursCache = tours;
     const container = document.getElementById('tours-table');
-    if (!tours.length) return (container.innerHTML = emptyState('No tours yet.'));
+    if (!tours.length) return (container.innerHTML = emptyState('No tours yet. Click "Add tour" to create one.'));
 
     container.innerHTML = renderTable(['Title', 'Days', 'Route', 'Price (head)', 'Active', ''], tours.map((t) => [
       escapeHtml(t.title), `${t.days}D/${t.nights}N`, escapeHtml(t.route || '—'),
@@ -97,13 +168,6 @@ async function loadTours() {
 function tourForm(t = {}) {
   const incStr = Array.isArray(t.includes) ? t.includes.join(', ') : '';
   const excStr = Array.isArray(t.excludes) ? t.excludes.join(', ') : '';
-  const itineraryHtml = (t.itinerary && t.itinerary.length) ? t.itinerary.map(d => `
-    <div class="border p-3 rounded bg-gray-50">
-      <div class="flex justify-between mb-1"><label class="font-semibold">${d.title}</label></div>
-      <textarea class="w-full border rounded p-2" rows="3" readonly>${d.description}</textarea>
-    </div>
-  `).join('') : '';
-
   return `
     <h3>${t.slug ? 'Edit tour' : 'Add tour'}</h3>
     <form id="tour-form">
@@ -112,7 +176,7 @@ function tourForm(t = {}) {
         <div class="field"><label>Days</label><input type="number" min="1" id="t-days" value="${t.days || ''}" required /></div>
         <div class="field"><label>Nights</label><input type="number" min="0" id="t-nights" value="${t.nights || ''}" required /></div>
       </div>
-      <div class="field"><label>Route</label><input id="t-route" value="${escapeHtml(t.route)}" placeholder="e.g. Mingora · Kalam · Ushu Forest" /></div>
+      <div class="field"><label>Route</label><input id="t-route" value="${escapeHtml(t.route)}" /></div>
       <div class="field-row">
         <div class="field"><label>Price (per head)</label><input type="number" min="0" id="t-price-head" value="${t.priceHead || ''}" required /></div>
         <div class="field"><label>Price (per couple)</label><input type="number" min="0" id="t-price-couple" value="${t.priceCouple || ''}" /></div>
@@ -126,9 +190,7 @@ function tourForm(t = {}) {
           <label style="margin:0;"><strong>Itinerary Schedule</strong></label>
           <button type="button" class="btn btn-ghost btn-sm" id="add-tour-day-btn">+ Add Day</button>
         </div>
-        <div id="tour-itinerary-container" style="display:flex; flex-direction:column; gap:8px;">
-          ${itineraryHtml}
-        </div>
+        <div id="tour-itinerary-container" style="display:flex; flex-direction:column; gap:8px;"></div>
       </div>
 
       <div class="field"><label>Image URL</label><input id="t-image" value="${escapeHtml(t.image)}" /></div>
@@ -155,6 +217,7 @@ function editTour(slug) {
   openModal(tourForm(t));
   bindTourForm(slug);
   tourDayCount = t.itinerary?.length || 0;
+  t.itinerary?.forEach(d => addTourDayField(d));
 }
 
 function bindTourForm(slug) {
@@ -201,8 +264,63 @@ async function deleteTour(slug) {
 }
 
 // ============================================================
-// The rest of your loaders: overview, packages, destinations etc...
-// KEEP ALL YOUR OTHER FUNCTIONS FROM ORIGINAL FILE HERE
+// GALLERY
+// ============================================================
+async function loadGallery() {
+  try {
+    const { items } = await apiRequest('/admin/gallery');
+    const container = document.getElementById('gallery-table');
+    if (!items.length) return (container.innerHTML = emptyState('No photos yet.'));
+    container.innerHTML = renderTable(['Destination', 'Order', 'Active', ''], items.map((g) => [
+      escapeHtml(g.destinationSlug), g.order,
+      g.active ? '<span class="badge badge-approved">Active</span>' : '<span class="badge badge-cancelled">Hidden</span>',
+      `<div class="row-actions"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm">Delete</button></div>`,
+    ]));
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================
+// BOOKINGS
+// ============================================================
+async function loadBookings() {
+  try {
+    const { bookings } = await apiRequest('/admin/bookings');
+    const container = document.getElementById('bookings-table');
+    if (!bookings.length) return (container.innerHTML = emptyState('No bookings yet.'));
+    container.innerHTML = renderTable(['Name', 'Trip', 'Status', 'Date'], bookings.map((b) => [
+      escapeHtml(b.name), escapeHtml(b.packages?.title || '—'), statusBadge(b.status), fmtDate(b.createdAt)
+    ]));
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================
+// FEEDBACK
+// ============================================================
+async function loadFeedback() {
+  try {
+    const { feedback } = await apiRequest('/admin/feedback');
+    const container = document.getElementById('feedback-table');
+    if (!feedback.length) return (container.innerHTML = emptyState('No feedback yet.'));
+    container.innerHTML = renderTable(['Name', 'Rating', 'Message'], feedback.map((f) => [
+      escapeHtml(f.name), '★'.repeat(f.rating), escapeHtml(f.message)
+    ]));
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================
+// CONTACT
+// ============================================================
+async function loadContact() {
+  try {
+    const { messages } = await apiRequest('/admin/contact');
+    const container = document.getElementById('contact-table');
+    if (!messages.length) return (container.innerHTML = emptyState('No messages yet.'));
+    container.innerHTML = renderTable(['Name', 'Email', 'Subject', 'Message'], messages.map((m) => [
+      escapeHtml(m.name), escapeHtml(m.email), escapeHtml(m.subject), escapeHtml(m.message)
+    ]));
+  } catch (err) { toast(err.message, true); }
+}
+
 // ============================================================
 const loaders = {
   overview: loadOverview, packages: loadPackages, destinations: loadDestinations,
