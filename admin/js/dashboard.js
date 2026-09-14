@@ -651,3 +651,63 @@ const loaders = {
   tours: loadTours, gallery: loadGallery,
 };
 loadOverview();
+
+let tourDayCount = 0;
+
+function addTourDayField(day = {title: '', description: ''}) {
+  tourDayCount++;
+  const container = document.getElementById('tour-itinerary-container');
+  const div = document.createElement('div');
+  div.className = "border p-3 rounded bg-gray-50";
+  div.innerHTML = `
+    <div class="flex justify-between mb-1">
+      <label class="font-semibold">Day ${tourDayCount}</label>
+      <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-500 text-xs">Remove</button>
+    </div>
+    <input type="text" placeholder="Day Title: e.g. Islamabad to Skardu" value="${day.title || ''}" class="tour-day-title w-full border rounded p-2 mb-2" />
+    <textarea placeholder="Description" class="tour-day-desc w-full border rounded p-2" rows="3">${day.description || ''}</textarea>
+  `;
+  container.appendChild(div);
+}
+
+document.addEventListener('click', (e) => {
+  if(e.target.id === 'add-tour-day-btn') addTourDayField();
+  
+  if(e.target.id === 'add-tour-btn') { // when you click "Add tour"
+    document.getElementById('package-form').classList.add('hidden');
+    document.getElementById('tour-form').classList.remove('hidden');
+    document.getElementById('modal-title').innerText = 'Add Tour';
+    document.getElementById('modal-overlay').classList.remove('hidden');
+    document.getElementById('tour-itinerary-container').innerHTML = '';
+    tourDayCount = 0;
+    addTourDayField(); // add first day
+  }
+});
+
+// On Tour Form Submit
+document.getElementById('tour-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const itinerary = [];
+  document.querySelectorAll('#tour-itinerary-container > div').forEach(div => {
+    itinerary.push({
+      title: div.querySelector('.tour-day-title').value,
+      description: div.querySelector('.tour-day-desc').value
+    });
+  });
+
+  const formData = {
+    title: document.getElementById('tour-title').value,
+    price_per_head: document.getElementById('tour-price-head').value,
+    price_per_couple: document.getElementById('tour-price-couple').value,
+    departure: document.getElementById('tour-departure').value,
+    includes: document.getElementById('tour-includes').value,
+    excludes: document.getElementById('tour-excludes').value,
+    itinerary: itinerary // this goes to Supabase jsonb
+  };
+
+  await api.post('/tours', formData); // make sure your api.js has this
+  toast('Tour saved!');
+  closeModal();
+  loadTours(); // refresh table
+});
