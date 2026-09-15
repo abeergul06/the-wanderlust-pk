@@ -283,6 +283,40 @@ function destinationForm(d = {}) {
           <input type="text" id="dest-slug" value="${escapeHtml(d.slug)}" required placeholder="e.g. hunza-valley" />
         </div>
       </div>
+      <div class="form-group">
+        <label for="dest-tagline">Tagline</label>
+        <input type="text" id="dest-tagline" value="${escapeHtml(d.tagline)}" placeholder="e.g. Switzerland of Pakistan" />
+      </div>
+      <div class="form-row" style="display: flex; gap: 12px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="dest-order">Order</label>
+          <input type="number" id="dest-order" min="0" value="${d.order ?? ''}" placeholder="e.g. 1" />
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="dest-image-url">Image URL</label>
+          <input type="text" id="dest-image-url" value="${escapeHtml(d.image_url)}" placeholder="https://..." />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="dest-description">Description</label>
+        <textarea id="dest-description" rows="3" placeholder="Short overview shown on the destination page">${escapeHtml(d.description)}</textarea>
+      </div>
+      <div class="form-group">
+        <label for="dest-route">Route</label>
+        <input type="text" id="dest-route" value="${escapeHtml(d.route)}" placeholder="e.g. Islamabad - Naran - Hunza" />
+      </div>
+      <div class="form-group">
+        <label for="dest-history">History</label>
+        <textarea id="dest-history" rows="3" placeholder="Background / history text">${escapeHtml(d.history)}</textarea>
+      </div>
+      <div class="form-group">
+        <label for="dest-points">Key points (comma separated)</label>
+        <input type="text" id="dest-points" value="${Array.isArray(d.points) ? d.points.join(', ') : ''}" placeholder="Scenic lakes, Hiking trails, Local cuisine" />
+      </div>
+      <div class="form-group">
+        <label for="dest-todo">Things to do (comma separated)</label>
+        <input type="text" id="dest-todo" value="${Array.isArray(d.todo) ? d.todo.join(', ') : ''}" placeholder="Boating, Trekking, Photography" />
+      </div>
       <label style="display:flex; align-items:center; gap:6px;">
         <input type="checkbox" id="dest-active" style="width:auto;" ${d.active !== false ? 'checked' : ''} />Visible on site
       </label>
@@ -300,6 +334,14 @@ function bindDestinationForm(id) {
       name: document.getElementById('dest-name').value.trim(),
       region: document.getElementById('dest-region').value.trim(),
       slug: document.getElementById('dest-slug').value.trim(),
+      tagline: document.getElementById('dest-tagline').value.trim(),
+      order: document.getElementById('dest-order').value ? Number(document.getElementById('dest-order').value) : null,
+      image_url: document.getElementById('dest-image-url').value.trim(),
+      description: document.getElementById('dest-description').value.trim(),
+      route: document.getElementById('dest-route').value.trim(),
+      history: document.getElementById('dest-history').value.trim(),
+      points: document.getElementById('dest-points').value.split(',').map((s) => s.trim()).filter(Boolean),
+      todo: document.getElementById('dest-todo').value.split(',').map((s) => s.trim()).filter(Boolean),
       active: document.getElementById('dest-active').checked,
     };
     try {
@@ -369,8 +411,15 @@ function tourForm(t = {}) {
         <div class="field"><label>Price (per couple)</label><input type="number" min="0" id="t-price-couple" value="${t.priceCouple || ''}" /></div>
       </div>
       <div class="field"><label>Departure</label><input id="t-departure" value="${escapeHtml(t.departure)}" /></div>
+      <div class="field-row">
+        <div class="field"><label>Length group</label><input id="t-length-group" value="${escapeHtml(t.length_group)}" placeholder="e.g. Short / Medium / Long" /></div>
+        <div class="field"><label>Transport</label><input id="t-transport" value="${escapeHtml(t.transport)}" placeholder="e.g. AC Coaster" /></div>
+      </div>
+      <div class="field"><label>Destination tags (comma separated)</label><input id="t-destination-tags" value="${Array.isArray(t.destination_tags) ? t.destination_tags.join(', ') : ''}" placeholder="hunza, gilgit-baltistan" /></div>
       <div class="field"><label>Includes (comma separated)</label><textarea id="t-includes" rows="2">${escapeHtml(incStr)}</textarea></div>
       <div class="field"><label>Excludes (comma separated)</label><textarea id="t-excludes" rows="2">${escapeHtml(excStr)}</textarea></div>
+      <div class="field"><label>Cost breakdown (JSON, optional)</label><textarea id="t-cost" rows="3" placeholder='{"advance": "30%", "balance": "on arrival"}'>${t.cost ? escapeHtml(JSON.stringify(t.cost)) : ''}</textarea></div>
+      <div class="field"><label>Payment plan (JSON, optional)</label><textarea id="t-payment" rows="3" placeholder='{"method": "bank transfer", "notes": "..."}'>${t.payment ? escapeHtml(JSON.stringify(t.payment)) : ''}</textarea></div>
 
       <div class="field">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -424,6 +473,19 @@ function bindTourForm(slug) {
       });
     });
 
+    // Cost / payment are free-form JSON since the DB column has no fixed
+    // shape — validate before building the body so a typo doesn't silently
+    // send a bad value or crash JSON.stringify downstream.
+    const costRaw = document.getElementById('t-cost').value.trim();
+    const paymentRaw = document.getElementById('t-payment').value.trim();
+    let cost = null, payment = null;
+    try {
+      cost = costRaw ? JSON.parse(costRaw) : null;
+      payment = paymentRaw ? JSON.parse(paymentRaw) : null;
+    } catch (err) {
+      return toast('Cost / Payment plan must be valid JSON (or left empty).', true);
+    }
+
     const body = {
       title: document.getElementById('t-title').value.trim(),
       days: Number(document.getElementById('t-days').value),
@@ -432,8 +494,13 @@ function bindTourForm(slug) {
       priceHead: Number(document.getElementById('t-price-head').value),
       priceCouple: document.getElementById('t-price-couple').value ? Number(document.getElementById('t-price-couple').value) : null,
       departure: document.getElementById('t-departure').value.trim(),
+      length_group: document.getElementById('t-length-group').value.trim(),
+      transport: document.getElementById('t-transport').value.trim(),
+      destination_tags: document.getElementById('t-destination-tags').value.split(',').map((s) => s.trim()).filter(Boolean),
       includes: document.getElementById('t-includes').value.split(',').map((s) => s.trim()).filter(Boolean),
       excludes: document.getElementById('t-excludes').value.split(',').map((s) => s.trim()).filter(Boolean),
+      cost,
+      payment,
       itinerary: itinerary,
       image: document.getElementById('t-image').value.trim(),
       featured: document.getElementById('t-featured').checked,
@@ -487,11 +554,18 @@ function galleryForm(g = {}) {
         <input type="number" id="gal-order" min="0" value="${g.order ?? ''}" placeholder="e.g. 1" />
       </div>
       <div class="form-group">
+        <label for="gal-badge">Badge (optional)</label>
+        <input type="text" id="gal-badge" value="${escapeHtml(g.badge)}" placeholder="e.g. Popular" />
+      </div>
+      <div class="form-group">
         <label for="gal-image">Photo</label>
         <input type="file" id="gal-image" accept="image/*" ${g.id ? '' : 'required'} />
         ${g.image ? `<p style="margin-top:6px; font-size:12px; color:#666;">Current photo is set — choose a file only to replace it.</p>` : ''}
       </div>
       <label style="display:flex; align-items:center; gap:6px;">
+        <input type="checkbox" id="gal-tall" style="width:auto;" ${g.tall ? 'checked' : ''} />Tall image (masonry layout)
+      </label>
+      <label style="display:flex; align-items:center; gap:6px; margin-top:8px;">
         <input type="checkbox" id="gal-active" style="width:auto;" ${g.active !== false ? 'checked' : ''} />Visible on site
       </label>
       <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
@@ -516,6 +590,8 @@ function bindGalleryForm(id, currentImage) {
         destinationSlug: document.getElementById('gal-destination').value,
         order: Number(document.getElementById('gal-order').value) || 0,
         image,
+        badge: document.getElementById('gal-badge').value.trim(),
+        tall: document.getElementById('gal-tall').checked,
         active: document.getElementById('gal-active').checked,
       };
       await apiRequest(id ? `/admin/gallery/${id}` : '/admin/gallery', { method: id ? 'PUT' : 'POST', body });
