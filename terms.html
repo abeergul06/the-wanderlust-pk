@@ -7,7 +7,12 @@
   <title>Terms & Conditions | The Wanderlust.pk</title>
   <meta name="description"
     content="Tour policies and customer guidelines for The Wanderlust.pk — pickup, payment, cancellation, and safety terms.">
+  <meta name="color-scheme" content="light only">
   <style>
+    html {
+      color-scheme: light only;
+    }
+
     :root {
       --navy: #173a5e;
       --navy-dark: #0f2942;
@@ -62,6 +67,7 @@
       background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
       color: #fff;
       padding: 40px 24px 34px;
+      margin-top: 70px;
     }
 
     .banner-inner {
@@ -144,7 +150,7 @@
     }
 
     li strong {
-      color: var(--white);
+      color: var(--navy);
     }
 
     .callout {
@@ -172,10 +178,17 @@
       font-size: 14.5px;
     }
 
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 14px 0 18px;
+    }
+
     table {
       width: 100%;
+      min-width: 420px;
       border-collapse: collapse;
-      margin: 14px 0 18px;
+      margin: 0;
       font-size: 14.5px;
     }
 
@@ -185,6 +198,7 @@
       text-align: left;
       padding: 10px 14px;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     tbody td {
@@ -221,6 +235,7 @@
 
     .contact-strip .row {
       margin-bottom: 4px;
+      word-break: break-word;
     }
 
     footer {
@@ -231,13 +246,105 @@
       color: var(--muted);
       background: #fff;
     }
+
+    img {
+      max-width: 100%;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 860px) {
+      main {
+        padding: 34px 20px 70px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .sitehead {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 14px 18px;
+      }
+
+      .sitehead nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 14px;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+      }
+
+      .sitehead nav a {
+        margin-left: 0;
+      }
+
+      .banner {
+        padding: 32px 20px 26px;
+      }
+
+      .banner h1 {
+        font-size: 25px;
+      }
+
+      .banner .tagline {
+        font-size: 11px;
+        letter-spacing: 1.8px;
+      }
+
+      main {
+        padding: 28px 16px 60px;
+      }
+
+      h2 {
+        font-size: 16.5px;
+        gap: 8px;
+      }
+
+      li,
+      p {
+        font-size: 14.5px;
+      }
+
+      .contact-strip {
+        padding: 16px 18px;
+        font-size: 13.5px;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .banner h1 {
+        font-size: 21px;
+      }
+
+      .badge {
+        font-size: 11px;
+        padding: 6px 11px;
+      }
+
+      h2 .num {
+        width: 20px;
+        height: 20px;
+        font-size: 11.5px;
+      }
+
+      table {
+        font-size: 13px;
+      }
+
+      thead th,
+      tbody td {
+        padding: 8px 10px;
+      }
+    }
   </style>
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-    <header class="navbar">
+  <header class="navbar">
     <a href="index.html" class="logo">
       <div class="logo-circle"><img src="logo.jpg" alt="The Wanderlust.pk Logo"></div>
       <div class="logo-text"><span>The</span> Wanderlust<span>.pk</span></div>
@@ -246,7 +353,7 @@
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="destinations.html">Destinations</a>
-      <a href="tours.html" class="active">Tours</a>
+      <a href="tours.html" >Tours</a>
       <a href="Gallery.html">Gallery</a>
       <a href="feedback.html">Feedback</a>
       <a href="contact.html">Contact</a>
@@ -258,7 +365,7 @@
     <div class="banner-inner">
       <div class="tagline">EXPLORE &nbsp;•&nbsp; DISCOVER &nbsp;•&nbsp; TRAVEL</div>
       <h1>Terms &amp; Conditions</h1>
-      <span class="badge">TOUR POLICIES &amp; CUSTOMER GUIDELINES</span>
+     
     </div>
   </div>
 
@@ -302,28 +409,30 @@
       <h2><span class="num">3</span>Cancellation &amp; Refund Policy</h2>
       <p style="font-size:15px; margin:0 0 4px;">Seat cancellation deductions are strictly applied based on notice
         duration prior to departure:</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Cancellation notice period</th>
-            <th>Deduction rate</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>7 days before the trip</td>
-            <td class="rate">50% deduction</td>
-          </tr>
-          <tr>
-            <td>5 days before the trip</td>
-            <td class="rate">75% deduction</td>
-          </tr>
-          <tr class="full">
-            <td>3 days before the trip</td>
-            <td class="rate">100% deduction (no refund)</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Cancellation notice period</th>
+              <th>Deduction rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>7 days before the trip</td>
+              <td class="rate">50% deduction</td>
+            </tr>
+            <tr>
+              <td>5 days before the trip</td>
+              <td class="rate">75% deduction</td>
+            </tr>
+            <tr class="full">
+              <td>3 days before the trip</td>
+              <td class="rate">100% deduction (no refund)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <ul>
         <li><strong>Early departure:</strong> No refund is provided if a participant leaves the trip at any stage,
           regardless of the reason.</li>
