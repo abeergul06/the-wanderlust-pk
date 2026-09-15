@@ -27,7 +27,11 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
 
   if (res.status === 401) {
     Auth.clearSession();
-    window.location.href = '/admin/login.html';
+    // Relative path — matches login.js's redirect and works regardless of
+    // which sub-path the admin panel is deployed under. The old hardcoded
+    // '/admin/login.html' broke this redirect on any deployment where the
+    // panel isn't served from the site root.
+    window.location.href = './login.html';
     throw new Error('Session expired. Please sign in again.');
   }
 
