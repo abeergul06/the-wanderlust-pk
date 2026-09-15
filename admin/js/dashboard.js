@@ -412,7 +412,15 @@ function tourForm(t = {}) {
       </div>
       <div class="field"><label>Departure</label><input id="t-departure" value="${escapeHtml(t.departure)}" /></div>
       <div class="field-row">
-        <div class="field"><label>Length group</label><input id="t-length-group" value="${escapeHtml(t.length_group)}" placeholder="e.g. Short / Medium / Long" /></div>
+        <div class="field">
+          <label>Length group</label>
+          <select id="t-length-group">
+            <option value="" ${!t.length_group ? 'selected' : ''}>—</option>
+            <option value="short" ${t.length_group === 'short' ? 'selected' : ''}>Short</option>
+            <option value="medium" ${t.length_group === 'medium' ? 'selected' : ''}>Medium</option>
+            <option value="long" ${t.length_group === 'long' ? 'selected' : ''}>Long</option>
+          </select>
+        </div>
         <div class="field"><label>Transport</label><input id="t-transport" value="${escapeHtml(t.transport)}" placeholder="e.g. AC Coaster" /></div>
       </div>
       <div class="field"><label>Destination tags (comma separated)</label><input id="t-destination-tags" value="${Array.isArray(t.destination_tags) ? t.destination_tags.join(', ') : ''}" placeholder="hunza, gilgit-baltistan" /></div>
@@ -494,7 +502,7 @@ function bindTourForm(slug) {
       priceHead: Number(document.getElementById('t-price-head').value),
       priceCouple: document.getElementById('t-price-couple').value ? Number(document.getElementById('t-price-couple').value) : null,
       departure: document.getElementById('t-departure').value.trim(),
-      length_group: document.getElementById('t-length-group').value.trim(),
+      length_group: document.getElementById('t-length-group').value || null,
       transport: document.getElementById('t-transport').value.trim(),
       destination_tags: document.getElementById('t-destination-tags').value.split(',').map((s) => s.trim()).filter(Boolean),
       includes: document.getElementById('t-includes').value.split(',').map((s) => s.trim()).filter(Boolean),
