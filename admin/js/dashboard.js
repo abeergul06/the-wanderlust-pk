@@ -8,7 +8,7 @@ document.getElementById('logout-btn').addEventListener('click', () => {
 });
 
 // ---------- nav ----------
-const views = ['overview', 'packages', 'destinations', 'bookings', 'feedback', 'contact', 'tours', 'gallery'];
+const views = ['overview', 'destinations', 'feedback', 'contact', 'tours', 'gallery'];
 document.querySelectorAll('.nav-item[data-view]').forEach((btn) => {
   btn.addEventListener('click', () => showView(btn.dataset.view));
 });
@@ -113,140 +113,18 @@ async function loadOverview() {
   try {
     const stats = await apiRequest('/admin/stats');
     document.getElementById('stat-grid').innerHTML = [
-      ['Packages', stats.packages], ['Destinations', stats.destinations],
+      ['Destinations', stats.destinations],
       ['Tours', stats.tours], ['Gallery photos', stats.gallery],
-      ['Total bookings', stats.bookings], ['Pending bookings', stats.pendingBookings],
       ['Feedback received', stats.feedback], ['Unread messages', stats.unreadContact],
     ].map(([label, num]) => `<div class="stat-card"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
-
-    // Sidebar badges were never populated before — wire them up now.
-    const bookingsCount = document.getElementById('nav-count-bookings');
-    bookingsCount.textContent = stats.pendingBookings || '';
-    bookingsCount.classList.toggle('hidden', !stats.pendingBookings);
 
     const contactCount = document.getElementById('nav-count-contact');
     contactCount.textContent = stats.unreadContact || '';
     contactCount.classList.toggle('hidden', !stats.unreadContact);
-
-    const { bookings } = await apiRequest('/admin/bookings');
-    const recent = bookings.slice(0, 5);
-    document.getElementById('overview-recent-bookings').innerHTML = recent.length
-      ? renderTable(['Name', 'Trip', 'Status', 'Date'], recent.map((b) => [
-          escapeHtml(b.name), escapeHtml(b.packages?.title || b.destination || '—'),
-          statusBadge(b.status), fmtDate(b.createdAt),
-        ]))
-      : emptyState('No bookings yet.');
   } catch (err) { toast(err.message, true); }
 }
 
-// ============================================================
-// PACKAGES
-// ============================================================
-let packagesCache = [];
 let destinationsCache = [];
-
-async function loadPackages() {
-  try {
-    if (!destinationsCache.length) await apiRequest('/admin/destinations').then((r) => (destinationsCache = r.destinations));
-    const { packages } = await apiRequest('/admin/packages');
-    packagesCache = packages;
-    const container = document.getElementById('packages-table');
-    if (!packages.length) return (container.innerHTML = emptyState('No packages yet.'));
-    container.innerHTML = renderTable(['Title', 'Category', 'Departure', 'Days', 'Cost', 'Active', ''], packages.map((p) => [
-      escapeHtml(p.title), escapeHtml(p.category || '—'), escapeHtml(p.departure || '—'), p.durationDays,
-      fmtMoney(p.cost),
-      activeBadge(p.isActive),
-      `<div class="row-actions"><button class="btn btn-ghost btn-sm" onclick="editPackage('${p.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deletePackage('${p.id}')">Delete</button></div>`,
-    ]));
-  } catch (err) { toast(err.message, true); }
-}
-
-function packageForm(p = {}) {
-  const inc = Array.isArray(p.servicesIncluded) ? p.servicesIncluded.join(', ') : '';
-  const exc = Array.isArray(p.servicesNotIncluded) ? p.servicesNotIncluded.join(', ') : '';
-  return `
-    ${modalHeader(p.id ? 'Edit package' : 'Add package')}
-    <form id="package-form" class="modal-body">
-      <div class="form-group">
-        <label for="pkg-title">Title</label>
-        <input type="text" id="pkg-title" value="${escapeHtml(p.title)}" required placeholder="e.g. 5-Day Hunza Valley Tour" />
-      </div>
-      <div class="form-row" style="display: flex; gap: 12px;">
-        <div class="form-group" style="flex: 1;">
-          <label for="pkg-duration">Duration (days)</label>
-          <input type="number" id="pkg-duration" min="1" value="${p.durationDays || ''}" required placeholder="e.g. 5" />
-        </div>
-        <div class="form-group" style="flex: 1;">
-          <label for="pkg-departure">Departure</label>
-          <input type="text" id="pkg-departure" value="${escapeHtml(p.departure)}" required placeholder="e.g. Islamabad / Every Saturday" />
-        </div>
-      </div>
-      <div class="form-row" style="display: flex; gap: 12px;">
-        <div class="form-group" style="flex: 1;">
-          <label for="pkg-category">Category</label>
-          <input type="text" id="pkg-category" value="${escapeHtml(p.category)}" placeholder="e.g. Northern Areas" />
-        </div>
-        <div class="form-group" style="flex: 1;">
-          <label for="pkg-cost">Cost (PKR)</label>
-          <input type="number" id="pkg-cost" min="0" value="${p.cost ?? ''}" required placeholder="e.g. 45000" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="pkg-services-included">Services Included</label>
-        <textarea id="pkg-services-included" rows="3" placeholder="Hotel stay, Daily breakfast, Tour guide">${escapeHtml(inc)}</textarea>
-      </div>
-      <div class="form-group">
-        <label for="pkg-services-excluded">Services Not Included</label>
-        <textarea id="pkg-services-excluded" rows="3" placeholder="Airfare tickets, Personal shopping, Tips">${escapeHtml(exc)}</textarea>
-      </div>
-      <label style="display:flex; align-items:center; gap:6px;">
-        <input type="checkbox" id="pkg-active" style="width:auto;" ${p.isActive !== false ? 'checked' : ''} />Visible on site
-      </label>
-      <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-        <button type="button" class="btn btn-ghost" id="modal-cancel-btn">Cancel</button>
-        <button type="submit" class="btn">${p.id ? 'Save changes' : 'Add package'}</button>
-      </div>
-    </form>`;
-}
-
-function bindPackageForm(id) {
-  document.getElementById('package-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const body = {
-      title: document.getElementById('pkg-title').value.trim(),
-      durationDays: Number(document.getElementById('pkg-duration').value),
-      departure: document.getElementById('pkg-departure').value.trim(),
-      category: document.getElementById('pkg-category').value.trim(),
-      cost: Number(document.getElementById('pkg-cost').value),
-      servicesIncluded: document.getElementById('pkg-services-included').value.split(',').map((s) => s.trim()).filter(Boolean),
-      servicesNotIncluded: document.getElementById('pkg-services-excluded').value.split(',').map((s) => s.trim()).filter(Boolean),
-      isActive: document.getElementById('pkg-active').checked,
-    };
-    try {
-      await apiRequest(id ? `/admin/packages/${id}` : '/admin/packages', { method: id ? 'PUT' : 'POST', body });
-      toast(id ? 'Package updated.' : 'Package added.');
-      closeModal(); loadPackages();
-    } catch (err) { toast(err.message, true); }
-  });
-}
-
-document.getElementById('add-package-btn').addEventListener('click', () => {
-  openModal(packageForm({}));
-  bindPackageForm(null);
-});
-
-function editPackage(id) {
-  const p = packagesCache.find((x) => x.id === id);
-  if (!p) return toast('Package not found.', true);
-  openModal(packageForm(p));
-  bindPackageForm(id);
-}
-
-async function deletePackage(id) {
-  if (!confirm('Delete this package?')) return;
-  try { await apiRequest(`/admin/packages/${id}`, { method: 'DELETE' }); toast('Package deleted.'); loadPackages(); }
-  catch (err) { toast(err.message, true); }
-}
 
 // ============================================================
 // DESTINATIONS
@@ -636,20 +514,6 @@ async function deleteGallery(id) {
 }
 
 // ============================================================
-// BOOKINGS
-// ============================================================
-async function loadBookings() {
-  try {
-    const { bookings } = await apiRequest('/admin/bookings');
-    const container = document.getElementById('bookings-table');
-    if (!bookings.length) return (container.innerHTML = emptyState('No bookings yet.'));
-    container.innerHTML = renderTable(['Name', 'Trip', 'Status', 'Date'], bookings.map((b) => [
-      escapeHtml(b.name), escapeHtml(b.packages?.title || '—'), statusBadge(b.status), fmtDate(b.createdAt),
-    ]));
-  } catch (err) { toast(err.message, true); }
-}
-
-// ============================================================
 // FEEDBACK
 // ============================================================
 let feedbackCache = [];
@@ -707,8 +571,8 @@ async function loadContact() {
 
 // ============================================================
 const loaders = {
-  overview: loadOverview, packages: loadPackages, destinations: loadDestinations,
-  bookings: loadBookings, feedback: loadFeedback, contact: loadContact,
+  overview: loadOverview, destinations: loadDestinations,
+  feedback: loadFeedback, contact: loadContact,
   tours: loadTours, gallery: loadGallery,
 };
 loadOverview();

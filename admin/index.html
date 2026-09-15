@@ -15,12 +15,9 @@
       <div class="brand-mark">The Wanderlust.pk<small>Admin panel</small></div>
 
       <button class="nav-item active" data-view="overview">Overview</button>
-      <button class="nav-item" data-view="packages">Packages</button>
       <button class="nav-item" data-view="destinations">Destinations</button>
       <button class="nav-item" data-view="tours">Tours</button>
       <button class="nav-item" data-view="gallery">Gallery</button>
-      <button class="nav-item" data-view="bookings">Bookings <span class="count hidden"
-          id="nav-count-bookings"></span></button>
       <button class="nav-item" data-view="feedback">Feedback</button>
       <button class="nav-item" data-view="contact">Contact <span class="count hidden"
           id="nav-count-contact"></span></button>
@@ -39,19 +36,6 @@
           <div><h1>Overview</h1><p>A quick look at what's happening across the site.</p></div>
         </div>
         <div class="stat-grid" id="stat-grid"></div>
-        <div class="panel">
-          <div class="panel-head"><h2>Latest trip requests</h2></div>
-          <div id="overview-recent-bookings"></div>
-        </div>
-      </section>
-
-      <!-- Packages -->
-      <section class="view hidden" id="view-packages">
-        <div class="main-header">
-          <div><h1>Packages</h1><p>Tour plans shown on homepage.</p></div>
-          <button class="btn" id="add-package-btn">Add package</button>
-        </div>
-        <div class="panel"><div id="packages-table"></div></div>
       </section>
 
       <!-- Destinations -->
@@ -79,12 +63,6 @@
           <button class="btn" id="add-gallery-btn">Add photo</button>
         </div>
         <div class="panel"><div id="gallery-table"></div></div>
-      </section>
-
-      <!-- Bookings -->
-      <section class="view hidden" id="view-bookings">
-        <div class="main-header"><div><h1>Bookings</h1><p>Trip requests from customers.</p></div></div>
-        <div class="panel"><div id="bookings-table"></div></div>
       </section>
 
       <!-- Feedback -->
