@@ -676,7 +676,7 @@ async function toggleFeedbackApproval(id) {
   if (!f) return toast('Feedback not found.', true);
   const nextApproved = !(f.approved !== false);
   try {
-    await apiRequest(`/admin/feedback/${id}`, { method: 'PUT', body: { approved: nextApproved } });
+    await apiRequest(`/admin/feedback/${id}`, { method: 'PATCH', body: { approved: nextApproved } });
     toast(nextApproved ? 'Feedback published.' : 'Feedback unpublished.');
     loadFeedback();
   } catch (err) { toast(err.message, true); }
