@@ -652,14 +652,42 @@ async function loadBookings() {
 // ============================================================
 // FEEDBACK
 // ============================================================
+let feedbackCache = [];
+
 async function loadFeedback() {
   try {
     const { feedback } = await apiRequest('/admin/feedback');
+    feedbackCache = feedback;
     const container = document.getElementById('feedback-table');
     if (!feedback.length) return (container.innerHTML = emptyState('No feedback yet.'));
-    container.innerHTML = renderTable(['Name', 'Rating', 'Message'], feedback.map((f) => [
-      escapeHtml(f.name), '★'.repeat(f.rating), escapeHtml(f.message),
+    container.innerHTML = renderTable(['Name', 'Trip', 'Rating', 'Message', 'Status', ''], feedback.map((f) => [
+      escapeHtml(f.name), escapeHtml(f.trip || '—'), '★'.repeat(f.rating), escapeHtml(f.text),
+      f.approved !== false ? '<span class="badge badge-approved">Published</span>' : '<span class="badge badge-pending">Pending</span>',
+      `<div class="row-actions">
+         <button class="btn btn-ghost btn-sm" onclick="toggleFeedbackApproval('${f.id}')">${f.approved !== false ? 'Unpublish' : 'Publish'}</button>
+         <button class="btn btn-danger btn-sm" onclick="deleteFeedback('${f.id}')">Delete</button>
+       </div>`,
     ]));
+  } catch (err) { toast(err.message, true); }
+}
+
+async function toggleFeedbackApproval(id) {
+  const f = feedbackCache.find((x) => x.id === id);
+  if (!f) return toast('Feedback not found.', true);
+  const nextApproved = !(f.approved !== false);
+  try {
+    await apiRequest(`/admin/feedback/${id}`, { method: 'PUT', body: { approved: nextApproved } });
+    toast(nextApproved ? 'Feedback published.' : 'Feedback unpublished.');
+    loadFeedback();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function deleteFeedback(id) {
+  if (!confirm('Delete this feedback? This cannot be undone.')) return;
+  try {
+    await apiRequest(`/admin/feedback/${id}`, { method: 'DELETE' });
+    toast('Feedback deleted.');
+    loadFeedback();
   } catch (err) { toast(err.message, true); }
 }
 
