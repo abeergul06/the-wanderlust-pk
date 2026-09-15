@@ -1,5 +1,8 @@
 // ---------- guard ----------
-if (!Auth.getToken()) window.location.href = './login.html';
+if (!Auth.getToken()) {
+  window.location.href = './login.html';
+  throw new Error('Not authenticated'); // stop the rest of the script from running while the redirect is in flight
+}
 const admin = Auth.getAdmin();
 document.getElementById('who').textContent = admin ? (admin.name || admin.email) : '';
 document.getElementById('logout-btn').addEventListener('click', () => {
