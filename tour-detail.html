@@ -15,6 +15,31 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="tour-detail.css">
   <script src="animation-stats.js"></script>
+  <style>
+    #tdItinerary > div {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    #tdIncludeExcludeSection .modal-todo {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #tdIncludeExcludeSection .modal-todo li {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #cbd5e1;
+    }
+
+    #tdCostBreakdown {
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+  </style>
 
   <script>
     // Point this at your deployed backend URL in production.
@@ -115,6 +140,30 @@
               <div class="td-info-label">Transport</div>
               <p id="tdTransport"></p>
             </div>
+          </div>
+
+          <!-- ITINERARY -->
+          <div class="td-block" id="tdItinerarySection" style="display:none;">
+            <h3><span class="dot" style="background:var(--cyan)"></span>Itinerary</h3>
+            <div id="tdItinerary"></div>
+          </div>
+
+          <!-- INCLUDED / EXCLUDED -->
+          <div class="td-info-grid" id="tdIncludeExcludeSection" style="display:none;">
+            <div class="td-block" style="margin:0;">
+              <h3>Included</h3>
+              <ul class="modal-todo" id="tdIncludes"></ul>
+            </div>
+            <div class="td-block" style="margin:0;">
+              <h3>Excluded</h3>
+              <ul class="modal-todo" id="tdExcluded"></ul>
+            </div>
+          </div>
+
+          <!-- COST BREAKDOWN -->
+          <div class="td-block" id="tdCostBreakdownSection" style="display:none;">
+            <h3><span class="dot" style="background:var(--cyan)"></span>Cost Breakdown</h3>
+            <p id="tdCostBreakdown" style="white-space:pre-line; line-height:1.7;"></p>
           </div>
 
           <!-- PAYMENT PROCEDURE -->

@@ -309,6 +309,10 @@ function tourForm(t = {}) {
       <div class="field"><label>Excludes (comma separated)</label><textarea id="t-excludes" rows="2">${escapeHtml(excStr)}</textarea></div>
       <div class="field"><label>Cost breakdown (JSON, optional)</label><textarea id="t-cost" rows="3" placeholder='{"advance": "30%", "balance": "on arrival"}'>${t.cost ? escapeHtml(JSON.stringify(t.cost)) : ''}</textarea></div>
       <div class="field"><label>Payment plan (JSON, optional)</label><textarea id="t-payment" rows="3" placeholder='{"method": "bank transfer", "notes": "..."}'>${t.payment ? escapeHtml(JSON.stringify(t.payment)) : ''}</textarea></div>
+      <div class="field">
+        <label>Cost Breakdown (free text, shown on tour page)</label>
+        <textarea id="t-cost-breakdown" rows="8" placeholder="TRIP COST FROM KARACHI:&#10;Economy Train: Single 49,000/- Couple 110,000/-&#10;AC Standard Train: Single 61,000/- Couple 133,000/-&#10;...">${escapeHtml(t.costBreakdown || '')}</textarea>
+      </div>
 
       <div class="field">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -390,6 +394,7 @@ function bindTourForm(slug) {
       excludes: document.getElementById('t-excludes').value.split(',').map((s) => s.trim()).filter(Boolean),
       cost,
       payment,
+      costBreakdown: document.getElementById('t-cost-breakdown').value.trim(),
       itinerary: itinerary,
       image: document.getElementById('t-image').value.trim(),
       featured: document.getElementById('t-featured').checked,

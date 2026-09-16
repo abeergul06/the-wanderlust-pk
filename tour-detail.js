@@ -90,6 +90,42 @@ function renderTour(t) {
     }
   }
 
+  // Itinerary
+  const itinerarySection = document.getElementById("tdItinerarySection");
+  if (itinerarySection) {
+    if (Array.isArray(t.itinerary) && t.itinerary.length) {
+      itinerarySection.style.display = "";
+      safeSetHTML("tdItinerary", t.itinerary.map((d, i) => `<div><b>Day ${d.day || i + 1}:</b> ${d.text || d.description || ""}</div>`).join(""));
+    } else {
+      itinerarySection.style.display = "none";
+    }
+  }
+
+  // Included / Excluded
+  const includeExcludeSection = document.getElementById("tdIncludeExcludeSection");
+  if (includeExcludeSection) {
+    const hasIncludes = Array.isArray(t.includes) && t.includes.length;
+    const hasExcludes = Array.isArray(t.excludes) && t.excludes.length;
+    if (hasIncludes || hasExcludes) {
+      includeExcludeSection.style.display = "";
+      safeSetHTML("tdIncludes", hasIncludes ? t.includes.map(i => `<li>✓ ${i}</li>`).join("") : "<li>—</li>");
+      safeSetHTML("tdExcluded", hasExcludes ? t.excludes.map(i => `<li>✕ ${i}</li>`).join("") : "<li>—</li>");
+    } else {
+      includeExcludeSection.style.display = "none";
+    }
+  }
+
+  // Cost Breakdown (free-text block set in the admin dashboard)
+  const costBreakdownSection = document.getElementById("tdCostBreakdownSection");
+  if (costBreakdownSection) {
+    if (t.costBreakdown) {
+      costBreakdownSection.style.display = "";
+      safeSetText("tdCostBreakdown", t.costBreakdown);
+    } else {
+      costBreakdownSection.style.display = "none";
+    }
+  }
+
   // Payment Procedure
   const paymentSection = document.getElementById("tdPaymentSection");
   if (paymentSection) {
