@@ -54,7 +54,7 @@
   <section class="section">
     <div class="wrap">
       <div class="dp-grid" id="destGrid">
-        <!-- cards injected by script for consistency with modal data -->
+        <!-- cards injected by script, populated live from the API -->
       </div>
     </div>
   </section>
@@ -84,7 +84,7 @@
                 <circle cx="17.2" cy="6.8" r="1" />
               </svg>
             </a>
-            <a href="https://www.tiktok.com/@thewanderlust.pk?_r=1&_t=ZN-99Yzkz6ERDq" target="_blank" rel="noopener"
+            <a href="https://www.tiktok.com/@thewanderlust.pk" target="_blank" rel="noopener"
               aria-label="TikTok">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                 <path
@@ -165,105 +165,12 @@
   </div>
 
   <script>
-    // Point this at your deployed backend URL in production.
+    // All destination data now comes live from the backend — no static
+    // fallback. Point this at your deployed backend URL in production.
     const API_BASE = "https://wanderlust-backend-lyart.vercel.app/api";
 
-    // Used only if the live API is unreachable or returns nothing yet —
-    // keeps the page working exactly as before in that case.
-    const FALLBACK_DESTINATIONS = [
-      {
-        key: "kashmir",
-        title: "Kashmir",
-        region: "AZAD KASHMIR",
-        img: "WhatsApp Image 2026-09-10 at 9.01.30 PM.jpeg",
-        desc: "Lush valleys, peaceful lakes and beautiful mountain scenery on a short escape .",
-        points: ["Muzaffarabad", "Neelum Valley", "Keran & Sharda", "Ratti Gali Lake", "Shounter Lake", "Pir Chinasi", "Chinari", "Banjosa Lake"],
-        route: "Islamabad → Muzaffarabad (4–5 hrs by road) → Neelum Valley → Keran & Sharda → Ratti Gali Lake (jeep track from Dowarian).",
-        history: "Once part of an old trade corridor linking the plains to Central Asia, this stretch of Kashmir was prized by the Mughals for its scenery and later became a princely state before joining Pakistan in 1947.",
-        todo: ["Boating on Ratti Gali and Banjosa lakes", "Short trek up to Ratti Gali from Dowarian", "River rafting on the Neelum", "Sampling local Kashmiri walnut and trout dishes"]
-      },
-      {
-        key: "skardu",
-        title: "Skardu",
-        region: "GILGIT-BALTISTAN",
-        img: "WhatsApp Image 2026-09-10 at 9.14.26 PM.jpeg",
-        desc: "Our signature deep-north adventure through glacial lakes, forts and high-altitude plateaus.",
-        points: ["Shangrila Resort", "Upper Kachura Lake", "Deosai Plains", "Satpara Lake", "Shigar Fort", "Kharpocho Fort", "Sheosar Lake", "Cold Desert"],
-        route: "Islamabad → Skardu by air (about 1 hour) or by road via the Karakoram Highway (18–20 hrs) → local sightseeing by jeep.",
-        history: "Skardu was the seat of the old Balti kingdom of Maqpon rulers. Kharpocho Fort, built in the 16th century, once guarded the valley, and the town has long served as the gateway to K2 and the Karakoram giants.",
-        todo: ["Jeep safari across the Deosai Plains", "Camping by Sheosar Lake", "Fishing at Satpara Lake", "Staying a night at the heritage Shigar Fort", "Stargazing on the Cold Desert dunes"]
-      },
-      {
-        key: "gilgit",
-        title: "Gilgit",
-        region: "NORTHERN AREAS",
-        img: "WhatsApp Image 2026-09-10 at 9.17.02 PM copy.jpeg",
-        desc: "A gateway to spectacular northern adventures, with easy access to Hunza and Naltar.",
-        points: ["Naltar Valley", "Kargah Buddha", "Gilgit River", "Danyor Bridge", "Jutial Nallah", "Gilgit Bazaar"],
-        route: "Islamabad → Gilgit via the Karakoram Highway (16–18 hrs) or a 1-hour domestic flight.",
-        history: "An ancient Silk Road trading post, Gilgit is home to a 7th-century rock carving of the Buddha at Kargah, and later became a key administrative post under the British political agents before joining Pakistan.",
-        todo: ["Skiing at Naltar in winter", "Viewing the Kargah Buddha rock carving", "Trout fishing along the Gilgit River", "Browsing the local bazaar for dry fruit and gemstones"]
-      },
-      {
-        key: "fairyMeadows",
-        title: "Fairy Meadows",
-        region: "DIAMER",
-        img: "WhatsApp Image 2026-09-10 at 9.13.45 PM.jpeg",
-        desc: "Green meadows surrounded by towering mountains, right at the foot of Nanga Parbat.",
-        points: ["Raikot Bridge", "Fairy Meadows Base Camp", "Nanga Parbat View Point", "Beyal Camp", "Jeep Track Trail"],
-        route: "Islamabad → Raikot Bridge via the Karakoram Highway (about 12 hrs) → jeep to Tato village → 3-hour trek or horse ride up to Fairy Meadows.",
-        history: "Sitting at the base of Nanga Parbat, the ninth-highest peak on earth and nicknamed the 'Killer Mountain,' this meadow has served as a base camp for mountaineering expeditions since the early 1900s.",
-        todo: ["Trekking to the Nanga Parbat base camp", "Camping under a completely dark night sky", "Photography of the Diamer face at sunrise", "Short hikes out to Beyal Camp"]
-      },
-      {
-        key: "swat",
-        title: "Swat",
-        region: "KHYBER PAKHTUNKHWA",
-        img: "WhatsApp Image 2026-09-10 at 9.08.07 PM.jpeg",
-        desc: "Rivers, forests, waterfalls and scenic valleys — often called the Switzerland of Pakistan.",
-        points: ["Malam Jabba", "Kalam Valley", "Mahodand Lake", "White Palace Marghazar", "Fizagat Park", "Bahrain"],
-        route: "Islamabad → Mingora, Swat via the Malakand Pass (4–5 hrs by road) → onward to Kalam and Mahodand by jeep.",
-        history: "Swat was once the heart of the Buddhist Gandhara civilization and later the seat of the princely State of Swat until it merged with Pakistan in 1969 — its old palaces and stupas still stand today.",
-        todo: ["Skiing or the chairlift at Malam Jabba", "Boating at Mahodand Lake", "Visiting Buddhist stupas around Saidu Sharif", "Riverside picnics at Fizagat Park"]
-      },
-      {
-        key: "naran",
-        title: "Naran & Shogran",
-        region: "KHYBER PAKHTUNKHWA",
-        img: "WhatsApp Image 2026-09-10 at 9.06.08 PM.jpeg",
-        desc: "Scenic valleys, alpine lakes and mountain passes in one of Pakistan's most-loved summer routes.",
-        points: ["Saif-ul-Malook Lake", "Babusar Top", "Lulusar Lake", "Shogran", "Siri Paye", "Kaghan Valley"],
-        route: "Islamabad → Balakot → Kaghan → Naran (6–7 hrs by road) → jeep onward to Saif-ul-Malook and over Babusar Top.",
-        history: "The valley takes its name from a local legend of Prince Saiful Malook and the fairy Badar Jamal, said to have met beside the lake. It has drawn summer travelers since the British colonial era.",
-        todo: ["Boating on Saif-ul-Malook at sunrise", "Jeep ride over Babusar Top", "Chairlift up to Siri Paye meadows from Shogran", "Trout fishing in the Kunhar River"]
-      },
-      {
-        key: "kumrat",
-        title: "Kumrat Valley",
-        region: "KHYBER PAKHTUNKHWA",
-        img: "WhatsApp Image 2026-09-10 at 9.11.18 PM.jpeg",
-        desc: "Dense deodar forests, rushing waterfalls, and pristine riverbanks tucked away in Upper Dir.",
-        points: ["Thall", "Kumrat Forest", "Panjkora River", "Jahaz Banda", "Katora Lake", "Badogai Pass", "Do Kala Chashma"],
-        route: "Islamabad → Swat Motorway → Dir Upper → Thall (6–7 hrs by road) → Kumrat Valley (1.5–2 hrs by 4x4 jeep).",
-        history: "Historically a secluded tribal region under the Dir princely state, Kumrat remained untouched for centuries before emerging as a popular eco-tourism hotspot.",
-        todo: ["Camping under the dense deodar canopy", "Trekking to the alpine Katora Lake via Jahaz Banda", "Trout fishing in the crystal-clear Panjkora River", "Exploring the wooden architecture of the ancient Thall Mosque"]
-      },
-      {
-        key: "astore",
-        title: "Astore Valley",
-        region: "GILGIT-BALTISTAN",
-        img: "WhatsApp Image 2026-09-11 at 6.53.26 PM.jpeg",
-        desc: "A breathtaking expanse of lush alpine meadows, pristine lakes, and majestic high-altitude passes at the foot of Nanga Parbat.",
-        points: ["Rama Meadows", "Rama Lake", "Minimarg", "Domel", "Deosai Plains", "Rainbow Lake", "Tarashing"],
-        route: "Islamabad → KKH / Naran-Babu Sar Pass → Jaglot → Astore Town (10–12 hrs by road) → Rama / Minimarg (1.5–3 hrs by 4x4 jeep).",
-        history: "Historically a key trade route connecting Gilgit to Kashmir and Ladakh, Astore was governed by local Dogra rulers and local rajas before becoming part of Gilgit-Baltistan.",
-        todo: ["Camping beside the serene Rama Lake", "Trekking to Nanga Parbat Rupal Basecamp from Tarashing", "Exploring the fairytale village of Minimarg and Rainbow Lake", "Witnessing the vast wilderness of Deosai National Park"]
-      },
-      
-    ];
-
     const grid = document.getElementById('destGrid');
-    let destinations = FALLBACK_DESTINATIONS;
+    let destinations = [];
 
     function renderGrid(list) {
       grid.innerHTML = "";
@@ -282,7 +189,12 @@
         grid.appendChild(card);
       });
     }
-    renderGrid(destinations);
+
+    function showMessage(text) {
+      grid.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; padding: 60px 20px; color: var(--soft, #94a3b8);">${text}</p>`;
+    }
+
+    showMessage("Loading destinations…");
 
     // Normalize a destination record from the API (slug/description/image/
     // highlights) into the shape this page's render + modal code expects
@@ -307,14 +219,15 @@
         if (!res.ok) throw new Error("Destinations request failed");
         const data = await res.json();
         const list = (data.destinations || []).map(normalizeDestination);
-        // If the API has nothing yet, keep the static fallback rather than
-        // showing an empty page.
-        if (list.length === 0) return;
+        if (list.length === 0) {
+          showMessage("No destinations available right now. Please check back soon.");
+          return;
+        }
         destinations = list;
         renderGrid(destinations);
       } catch (err) {
-        // Backend unreachable — keep showing the static fallback list.
-        console.error("Failed to load live destinations, showing fallback:", err);
+        console.error("Failed to load destinations:", err);
+        showMessage("Couldn't load destinations right now — please refresh, or check back shortly.");
       }
     }
     loadDestinations();
