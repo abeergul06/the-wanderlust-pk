@@ -4,94 +4,289 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Dashboard — The Wanderlust.pk Admin</title>
+
   <link rel="stylesheet" href="./css/style.css" />
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
+
   <div class="app">
+
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
     <aside class="sidebar">
-      <div class="brand-mark">The Wanderlust.pk<small>Admin panel</small></div>
 
-      <button class="nav-item active" data-view="overview">Overview</button>
-      <button class="nav-item" data-view="destinations">Destinations</button>
-      <button class="nav-item" data-view="tours">Tours</button>
-      <button class="nav-item" data-view="gallery">Gallery</button>
-      <button class="nav-item" data-view="feedback">Feedback</button>
-      <button class="nav-item" data-view="contact">Contact <span class="count hidden"
-          id="nav-count-contact"></span></button>
-
-      <div class="sidebar-footer">
-        <div class="who" id="who">—</div>
-        <button class="btn btn-ghost btn-full" id="logout-btn"
-          style="border-color: rgba(255,255,255,0.2); color:#fff;">Sign out</button>
+      <div class="brand-mark">
+        The Wanderlust.pk
+        <small>Admin panel</small>
       </div>
-    </aside>
 
-    <main class="main">
       <!-- Overview -->
-      <section class="view" id="view-overview">
-        <div class="main-header">
-          <div><h1>Overview</h1><p>A quick look at what's happening across the site.</p></div>
-        </div>
-        <div class="stat-grid" id="stat-grid"></div>
-      </section>
+      <button class="nav-item active" data-view="overview">
+        Overview
+      </button>
 
       <!-- Destinations -->
-      <section class="view hidden" id="view-destinations">
-        <div class="main-header">
-          <div><h1>Destinations</h1><p>Regions shown on the Destinations page.</p></div>
-          <button class="btn" id="add-destination-btn">Add destination</button>
-        </div>
-        <div class="panel"><div id="destinations-table"></div></div>
-      </section>
+      <button class="nav-item" data-view="destinations">
+        Destinations
+      </button>
 
       <!-- Tours -->
-      <section class="view hidden" id="view-tours">
-        <div class="main-header">
-          <div><h1>Tours</h1><p>Fixed departures shown on the Tours page.</p></div>
-          <button class="btn" id="add-tour-btn">Add tour</button>
-        </div>
-        <div class="panel"><div id="tours-table"></div></div>
-      </section>
+      <button class="nav-item" data-view="tours">
+        Tours
+      </button>
 
       <!-- Gallery -->
-      <section class="view hidden" id="view-gallery">
-        <div class="main-header">
-          <div><h1>Gallery</h1><p>Photos shown on the Gallery page.</p></div>
-          <button class="btn" id="add-gallery-btn">Add photo</button>
-        </div>
-        <div class="panel"><div id="gallery-table"></div></div>
-      </section>
+      <button class="nav-item" data-view="gallery">
+        Gallery
+      </button>
 
       <!-- Feedback -->
-      <section class="view hidden" id="view-feedback">
-        <div class="main-header"><div><h1>Feedback</h1><p>Approve feedback to publish it as testimonial.</p></div></div>
-        <div class="panel"><div id="feedback-table"></div></div>
-      </section>
+      <button class="nav-item" data-view="feedback">
+        Feedback
+      </button>
 
       <!-- Contact -->
-      <section class="view hidden" id="view-contact">
-        <div class="main-header"><div><h1>Contact messages</h1></div></div>
-        <div class="panel"><div id="contact-table"></div></div>
+      <button class="nav-item" data-view="contact">
+        Contact
+        <span class="count hidden" id="nav-count-contact"></span>
+      </button>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+
+        <div class="who" id="who">
+          —
+        </div>
+
+        <button
+          class="btn btn-ghost btn-full"
+          id="logout-btn"
+          style="border-color: rgba(255,255,255,0.2); color:#fff;"
+        >
+          Sign out
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+    <main class="main">
+
+
+      <!-- =======================================================
+           OVERVIEW
+      ======================================================== -->
+      <section class="view" id="view-overview">
+
+        <div class="main-header">
+
+          <div>
+            <h1>Overview</h1>
+            <p>
+              A quick look at what's happening across the site.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="stat-grid" id="stat-grid"></div>
+
       </section>
+
+
+      <!-- =======================================================
+           DESTINATIONS
+      ======================================================== -->
+      <section class="view hidden" id="view-destinations">
+
+        <div class="main-header">
+
+          <div>
+            <h1>Destinations</h1>
+            <p>
+              Manage destinations shown on the Destinations page.
+            </p>
+          </div>
+
+          <button
+            class="btn"
+            id="add-destination-btn"
+          >
+            Add destination
+          </button>
+
+        </div>
+
+        <div class="panel">
+          <div id="destinations-table"></div>
+        </div>
+
+      </section>
+
+
+      <!-- =======================================================
+           TOURS
+      ======================================================== -->
+      <section class="view hidden" id="view-tours">
+
+        <div class="main-header">
+
+          <div>
+            <h1>Tours</h1>
+            <p>
+              Manage tours shown on the Tours page.
+            </p>
+          </div>
+
+          <button
+            class="btn"
+            id="add-tour-btn"
+          >
+            Add tour
+          </button>
+
+        </div>
+
+        <div class="panel">
+          <div id="tours-table"></div>
+        </div>
+
+      </section>
+
+
+      <!-- =======================================================
+           GALLERY
+      ======================================================== -->
+      <section class="view hidden" id="view-gallery">
+
+        <div class="main-header">
+
+          <div>
+            <h1>Gallery</h1>
+            <p>
+              Manage photos shown on the Gallery page.
+            </p>
+          </div>
+
+          <button
+            class="btn"
+            id="add-gallery-btn"
+          >
+            Add photo
+          </button>
+
+        </div>
+
+        <div class="panel">
+          <div id="gallery-table"></div>
+        </div>
+
+      </section>
+
+
+      <!-- =======================================================
+           FEEDBACK
+      ======================================================== -->
+      <section class="view hidden" id="view-feedback">
+
+        <div class="main-header">
+
+          <div>
+            <h1>Feedback</h1>
+            <p>
+              Approve feedback to publish it as testimonial.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="panel">
+          <div id="feedback-table"></div>
+        </div>
+
+      </section>
+
+
+      <!-- =======================================================
+           CONTACT
+      ======================================================== -->
+      <section class="view hidden" id="view-contact">
+
+        <div class="main-header">
+
+          <div>
+            <h1>Contact messages</h1>
+            <p>
+              View messages submitted through the website.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="panel">
+          <div id="contact-table"></div>
+        </div>
+
+      </section>
+
     </main>
+
   </div>
 
-  <!--
-    Modal shell only. Every form (package, destination, tour, gallery) is
-    generated by dashboard.js and injected into #modal-content — that keeps
-    a single close/cancel behavior working for all of them and avoids
-    leftover static forms with duplicate ids.
-  -->
-  <div class="modal-overlay hidden" id="modal-overlay">
-    <div class="modal" id="modal-content"></div>
+
+  <!-- =========================================================
+       MODAL
+       
+       dashboard.js dynamically generates:
+       - Destination form
+       - Tour form
+       - Gallery form
+       - Other admin forms
+       
+       So no static duplicate forms are required here.
+  ========================================================== -->
+
+  <div
+    class="modal-overlay hidden"
+    id="modal-overlay"
+  >
+
+    <div
+      class="modal"
+      id="modal-content"
+    ></div>
+
   </div>
 
-  <div class="toast" id="toast"></div>
 
+  <!-- Toast notifications -->
+  <div
+    class="toast"
+    id="toast"
+  ></div>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================== -->
+
+  <!-- API helper -->
   <script src="./js/api.js"></script>
+
+  <!-- Dashboard logic -->
   <script src="./js/dashboard.js"></script>
+
 </body>
+
 </html>
