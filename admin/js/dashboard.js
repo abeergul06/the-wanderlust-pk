@@ -401,7 +401,7 @@ async function loadGallery() {
     const container = document.getElementById('gallery-table');
     if (!items.length) return (container.innerHTML = emptyState('No photos yet.'));
     container.innerHTML = renderTable(['Destination', 'Order', 'Active', ''], items.map((g) => [
-      escapeHtml(g.destinationSlug), g.order,
+      escapeHtml(g.destination_slug), g.order,
       activeBadge(g.active),
       `<div class="row-actions"><button class="btn btn-ghost btn-sm" onclick="editGallery('${g.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteGallery('${g.id}')">Delete</button></div>`,
     ]));
@@ -409,7 +409,7 @@ async function loadGallery() {
 }
 
 function galleryForm(g = {}) {
-  const options = destinationsCache.map((d) => `<option value="${escapeHtml(d.slug)}" ${g.destinationSlug === d.slug ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('');
+  const options = destinationsCache.map((d) => `<option value="${escapeHtml(d.slug)}" ${g.destination_slug === d.slug ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('');
   return `
     ${modalHeader(g.id ? 'Edit photo' : 'Add photo')}
     <form id="gallery-form" class="modal-body">
@@ -428,7 +428,7 @@ function galleryForm(g = {}) {
       <div class="form-group">
         <label for="gal-image">Photo</label>
         <input type="file" id="gal-image" accept="image/*" ${g.id ? '' : 'required'} />
-        ${g.image ? `<p style="margin-top:6px; font-size:12px; color:#666;">Current photo is set — choose a file only to replace it.</p>` : ''}
+        ${g.image_url ? `<p style="margin-top:6px; font-size:12px; color:#666;">Current photo is set — choose a file only to replace it.</p>` : ''}
       </div>
       <label style="display:flex; align-items:center; gap:6px;">
         <input type="checkbox" id="gal-tall" style="width:auto;" ${g.tall ? 'checked' : ''} />Tall image (masonry layout)
@@ -455,9 +455,9 @@ function bindGalleryForm(id, currentImage) {
       let image = currentImage || null;
       if (file) image = await uploadImage(file);
       const body = {
-        destinationSlug: document.getElementById('gal-destination').value,
+        destination_slug: document.getElementById('gal-destination').value,
         order: Number(document.getElementById('gal-order').value) || 0,
-        image,
+        image_url: image,
         badge: document.getElementById('gal-badge').value.trim(),
         tall: document.getElementById('gal-tall').checked,
         active: document.getElementById('gal-active').checked,
@@ -486,7 +486,7 @@ function editGallery(id) {
   const g = galleryCache.find((x) => x.id === id);
   if (!g) return toast('Photo not found.', true);
   openModal(galleryForm(g));
-  bindGalleryForm(id, g.image);
+  bindGalleryForm(id, g.image_url);
 }
 
 async function deleteGallery(id) {
