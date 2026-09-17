@@ -85,28 +85,43 @@ function activeBadge(isActive) {
   return isActive !== false ? '<span class="badge badge-approved">Active</span>' : '<span class="badge badge-cancelled">Hidden</span>';
 }
 
-// ========= TOUR ITINERARY GLOBALS =========
-let tourDayCount = 0;
-function addTourDayField(day = { title: '', description: '' }) {
-  tourDayCount++;
-  const container = document.getElementById('tour-itinerary-container');
-  if (!container) return;
-  const div = document.createElement('div');
-  // "tour-day-card" gives the Remove button an unambiguous target — the
-  // whole card, not just its inner header row.
-  div.className = 'border p-3 rounded bg-gray-50 tour-day-card';
-  div.innerHTML = `
-    <div class="flex justify-between mb-1">
-      <label class="font-semibold">Day ${tourDayCount}</label>
-      <button type="button" class="tour-day-remove text-red-500 text-xs">Remove</button>
-    </div>
-    <input type="text" placeholder="Day Title: e.g. Islamabad to Skardu" value="${escapeHtml(day.title || '')}" class="tour-day-title w-full border rounded p-2 mb-2" required />
-    <textarea placeholder="Description" class="tour-day-desc w-full border rounded p-2" rows="3" required>${escapeHtml(day.description || '')}</textarea>
-  `;
-  div.querySelector('.tour-day-remove').addEventListener('click', () => {
-    div.remove();
-  });
-  container.appendChild(div);
+// ========= TOUR ITINERARY / COST / PAYMENT TEXT HELPERS =========
+// Cost, payment and itinerary are now stored as plain free text. Older
+// tours saved before this change may still have the old structured
+// shapes (cost as a per-city object, payment as {policy, methods[]},
+// itinerary as an array of day objects) — these helpers turn either
+// shape into readable text so the admin form always shows something
+// editable instead of raw JSON or a blank field.
+function costToText(cost) {
+  if (!cost) return '';
+  if (typeof cost === 'string') return cost;
+  const labels = { lahore: 'Lahore', islamabad: 'Islamabad', faisalabad: 'Faisalabad', karachi: 'Karachi' };
+  const parts = Object.entries(cost)
+    .filter(([key, val]) => key !== 'couplePackage' && val != null)
+    .map(([key, val]) => `${labels[key] || key}: Rs. ${Number(val).toLocaleString()}`);
+  if (cost.couplePackage) parts.push(`Couple package: Rs. ${Number(cost.couplePackage).toLocaleString()}`);
+  return parts.join(' | ');
+}
+
+function paymentToText(payment) {
+  if (!payment) return '';
+  if (typeof payment === 'string') return payment;
+  const lines = [];
+  if (payment.policy) lines.push(payment.policy);
+  (payment.methods || []).forEach((m) => lines.push(`${m.label}: ${m.accountName} - ${m.accountNumber}`));
+  if (payment.verificationContact) lines.push(`Verification contact: ${payment.verificationContact}`);
+  return lines.join('\n');
+}
+
+function itineraryToText(itinerary) {
+  if (!itinerary) return '';
+  if (typeof itinerary === 'string') return itinerary;
+  if (Array.isArray(itinerary)) {
+    return itinerary
+      .map((d, i) => `Day ${i + 1}${d.title ? ` — ${d.title}` : ''}: ${d.description || d.text || ''}`)
+      .join('\n\n');
+  }
+  return '';
 }
 
 // ============================================================
@@ -292,34 +307,19 @@ function tourForm(t = {}) {
         <div class="field"><label>Price (per couple)</label><input type="number" min="0" id="t-price-couple" value="${t.priceCouple || ''}" /></div>
       </div>
       <div class="field"><label>Departure</label><input id="t-departure" value="${escapeHtml(t.departure)}" /></div>
-      <div class="field-row">
-        <div class="field">
-          <label>Length group</label>
-          <select id="t-length-group">
-            <option value="" ${!t.length_group ? 'selected' : ''}>—</option>
-            <option value="short" ${t.length_group === 'short' ? 'selected' : ''}>Short</option>
-            <option value="medium" ${t.length_group === 'medium' ? 'selected' : ''}>Medium</option>
-            <option value="long" ${t.length_group === 'long' ? 'selected' : ''}>Long</option>
-          </select>
-        </div>
-        <div class="field"><label>Transport</label><input id="t-transport" value="${escapeHtml(t.transport)}" placeholder="e.g. AC Coaster" /></div>
-      </div>
-      <div class="field"><label>Destination tags (comma separated)</label><input id="t-destination-tags" value="${Array.isArray(t.destination_tags) ? t.destination_tags.join(', ') : ''}" placeholder="hunza, gilgit-baltistan" /></div>
+      <div class="field"><label>Transport</label><input id="t-transport" value="${escapeHtml(t.transport)}" placeholder="e.g. AC Coaster" /></div>
       <div class="field"><label>Includes (comma separated)</label><textarea id="t-includes" rows="2">${escapeHtml(incStr)}</textarea></div>
       <div class="field"><label>Excludes (comma separated)</label><textarea id="t-excludes" rows="2">${escapeHtml(excStr)}</textarea></div>
-      <div class="field"><label>Cost breakdown (JSON, optional)</label><textarea id="t-cost" rows="3" placeholder='{"advance": "30%", "balance": "on arrival"}'>${t.cost ? escapeHtml(JSON.stringify(t.cost)) : ''}</textarea></div>
-      <div class="field"><label>Payment plan (JSON, optional)</label><textarea id="t-payment" rows="3" placeholder='{"method": "bank transfer", "notes": "..."}'>${t.payment ? escapeHtml(JSON.stringify(t.payment)) : ''}</textarea></div>
+      <div class="field"><label>Cost breakdown (free text, optional)</label><textarea id="t-cost" rows="3" placeholder="Lahore: Rs. 30,000 | Islamabad: Rs. 30,000 | Couple package: Rs. 70,000">${escapeHtml(costToText(t.cost))}</textarea></div>
+      <div class="field"><label>Payment plan (free text, optional)</label><textarea id="t-payment" rows="3" placeholder="50% advance required. JazzCash: Muhammad Azam - 0303-9465839">${escapeHtml(paymentToText(t.payment))}</textarea></div>
       <div class="field">
         <label>Cost Breakdown (free text, shown on tour page)</label>
         <textarea id="t-cost-breakdown" rows="8" placeholder="TRIP COST FROM KARACHI:&#10;Economy Train: Single 49,000/- Couple 110,000/-&#10;AC Standard Train: Single 61,000/- Couple 133,000/-&#10;...">${escapeHtml(t.costBreakdown || '')}</textarea>
       </div>
 
       <div class="field">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <label style="margin:0;"><strong>Itinerary Schedule</strong></label>
-          <button type="button" class="btn btn-ghost btn-sm" id="add-tour-day-btn">+ Add Day</button>
-        </div>
-        <div id="tour-itinerary-container" style="display:flex; flex-direction:column; gap:8px;"></div>
+        <label><strong>Itinerary</strong> (one paragraph, day by day)</label>
+        <textarea id="t-itinerary" rows="10" placeholder="Day 1: Pickup from Islamabad, breakfast at Balakot, reach Naran...&#10;&#10;Day 2: Travel to Babusar Top, visit Lulusar Lake...">${escapeHtml(itineraryToText(t.itinerary))}</textarea>
       </div>
 
       <div class="field"><label>Image URL</label><input id="t-image" value="${escapeHtml(t.image)}" /></div>
@@ -337,8 +337,6 @@ function tourForm(t = {}) {
 document.getElementById('add-tour-btn').addEventListener('click', () => {
   openModal(tourForm({}));
   bindTourForm(null);
-  tourDayCount = 0;
-  addTourDayField();
 });
 
 function editTour(slug) {
@@ -346,38 +344,16 @@ function editTour(slug) {
   if (!t) return toast('Tour not found.', true);
   openModal(tourForm(t));
   bindTourForm(slug);
-  // Just reset the counter — addTourDayField() already increments it per
-  // card. Pre-setting it to the itinerary length here (as before) caused
-  // the day numbers to double-count and start from the wrong value.
-  tourDayCount = 0;
-  (t.itinerary || []).forEach((d) => addTourDayField(d));
 }
 
 function bindTourForm(slug) {
-  document.getElementById('add-tour-day-btn').addEventListener('click', () => addTourDayField());
-
   document.getElementById('tour-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const itinerary = [];
-    document.querySelectorAll('#tour-itinerary-container > div').forEach((div) => {
-      itinerary.push({
-        title: div.querySelector('.tour-day-title').value,
-        description: div.querySelector('.tour-day-desc').value,
-      });
-    });
 
-    // Cost / payment are free-form JSON since the DB column has no fixed
-    // shape — validate before building the body so a typo doesn't silently
-    // send a bad value or crash JSON.stringify downstream.
-    const costRaw = document.getElementById('t-cost').value.trim();
-    const paymentRaw = document.getElementById('t-payment').value.trim();
-    let cost = null, payment = null;
-    try {
-      cost = costRaw ? JSON.parse(costRaw) : null;
-      payment = paymentRaw ? JSON.parse(paymentRaw) : null;
-    } catch (err) {
-      return toast('Cost / Payment plan must be valid JSON (or left empty).', true);
-    }
+    // Cost, payment and itinerary are all plain text now — no parsing needed.
+    const itinerary = document.getElementById('t-itinerary').value.trim();
+    const cost = document.getElementById('t-cost').value.trim() || null;
+    const payment = document.getElementById('t-payment').value.trim() || null;
 
     const body = {
       title: document.getElementById('t-title').value.trim(),
@@ -387,9 +363,7 @@ function bindTourForm(slug) {
       priceHead: Number(document.getElementById('t-price-head').value),
       priceCouple: document.getElementById('t-price-couple').value ? Number(document.getElementById('t-price-couple').value) : null,
       departure: document.getElementById('t-departure').value.trim(),
-      length_group: document.getElementById('t-length-group').value || null,
       transport: document.getElementById('t-transport').value.trim(),
-      destination_tags: document.getElementById('t-destination-tags').value.split(',').map((s) => s.trim()).filter(Boolean),
       includes: document.getElementById('t-includes').value.split(',').map((s) => s.trim()).filter(Boolean),
       excludes: document.getElementById('t-excludes').value.split(',').map((s) => s.trim()).filter(Boolean),
       cost,

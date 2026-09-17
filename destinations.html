@@ -196,6 +196,17 @@
 
     showMessage("Loading destinations…");
 
+    // Points/todo may come back as a real array, or as delimited plain
+    // text (the DB column for these is just "text", not an array type) —
+    // this normalizes either shape into an array so .map() never crashes.
+    function toList(val) {
+      if (Array.isArray(val)) return val;
+      if (typeof val === "string" && val.trim()) {
+        return val.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
+      }
+      return [];
+    }
+
     // Normalize a destination record from the API (slug/description/image/
     // highlights) into the shape this page's render + modal code expects
     // (key/desc/img/points), since field names may differ.
@@ -206,10 +217,10 @@
         region: d.region || "",
         img: d.img || d.image || d.imageUrl || "",
         desc: d.desc || d.description || "",
-        points: d.points || d.highlights || [],
+        points: toList(d.points || d.highlights),
         route: d.route || "",
         history: d.history || "",
-        todo: d.todo || d.thingsToDo || []
+        todo: toList(d.todo || d.thingsToDo)
       };
     }
 

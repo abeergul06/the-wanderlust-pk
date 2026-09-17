@@ -16,6 +16,29 @@ let state = {
 
 function formatPKR(n) { return "Rs " + n.toLocaleString("en-PK"); }
 
+// The tours table has no length_group column, so this is computed here
+// instead of trusting a t.lengthGroup field from the API (which is always
+// undefined) — that mismatch is why the duration filter checkboxes never
+// matched anything.
+function lengthGroup(days) {
+  if (days <= 4) return 'short';
+  if (days <= 7) return 'medium';
+  return 'long';
+}
+
+// Some tours may have priceHead unset but a nested cost breakdown instead —
+// fall back through the shapes so filtering/sorting/display always has a
+// usable number instead of silently showing/sorting on 0.
+function getTourPrice(t) {
+  if (t.priceHead) return t.priceHead;
+  if (t.price) return t.price;
+  if (t.cost) {
+    if (t.cost.fromKarachi?.economyTrain?.perHead) return t.cost.fromKarachi.economyTrain.perHead;
+    if (t.cost.fromIslamabad?.withoutStay?.perHead) return t.cost.fromIslamabad.withoutStay.perHead;
+  }
+  return 0;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const grid = document.getElementById('tourListingGrid');
   if (!grid) return;
@@ -37,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Build filters
   function buildFilters() {
-    const durations = [...new Set(TOURS.map(t => t.lengthGroup))];
+    const durations = [...new Set(TOURS.map(t => lengthGroup(t.days)))];
     const destinations = ["Swat", "Kashmir", "Naran", "Skardu", "Hunza", "Kumrat", "Astore", "Neelam"];
 
     if (durationList) {
@@ -62,8 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const matchesSearch = !state.search ||
         t.title.toLowerCase().includes(state.search) ||
         t.route.toLowerCase().includes(state.search);
-      const matchesPrice = t.priceHead <= state.maxPrice;
-      const matchesLength = state.length.size === 0 || state.length.has(t.lengthGroup);
+      const matchesPrice = getTourPrice(t) <= state.maxPrice;
+      const matchesLength = state.length.size === 0 || state.length.has(lengthGroup(t.days));
       const matchesDest = state.dests.size === 0 || [...state.dests].some(dest =>
         t.title.toLowerCase().includes(dest.toLowerCase()) ||
         t.route.toLowerCase().includes(dest.toLowerCase())
@@ -71,8 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return matchesSearch && matchesPrice && matchesLength && matchesDest;
     });
 
-    if (state.sort === "price-asc") filtered.sort((a, b) => a.priceHead - b.priceHead);
-    if (state.sort === "price-desc") filtered.sort((a, b) => b.priceHead - a.priceHead);
+    if (state.sort === "price-asc") filtered.sort((a, b) => getTourPrice(a) - getTourPrice(b));
+    if (state.sort === "price-desc") filtered.sort((a, b) => getTourPrice(b) - getTourPrice(a));
     if (state.sort === "duration-asc") filtered.sort((a, b) => a.days - b.days);
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
@@ -98,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="tl-loc">📍 ${t.route.split('·')[0].trim()}</div>
               <p class="tl-desc">${t.route.substring(0, 90)}...</p>
               <div class="tl-footer">
-                <div class="tl-price">${formatPKR(t.priceHead)}<span>Per Person</span></div>
+                <div class="tl-price">${formatPKR(getTourPrice(t))}<span>Per Person</span></div>
                 <button class="tl-view-btn" onclick="openTourModal('${t.id}')">View Details</button>
               </div>
             </div>
@@ -155,13 +178,29 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalDesc) modalDesc.textContent = `Route: ${t.route}`;
 
     const modalPrice = document.getElementById('tourModalPrice');
-    if (modalPrice) modalPrice.textContent = `${formatPKR(t.priceHead)} / Per Person`;
+    if (modalPrice) {
+      // Both prices share one element — the old code wrote the per-person
+      // price here and then immediately overwrote it with the couple price
+      // using the same id, so the per-person price never actually showed.
+      const headText = `${formatPKR(getTourPrice(t))} / Per Person`;
+      const coupleText = t.priceCouple ? ` · ${formatPKR(t.priceCouple)} / Couple` : '';
+      modalPrice.textContent = headText + coupleText;
+    }
 
-    const modalcouple = document.getElementById('tourModalPrice');
-    if (modalcouple) modalPrice.textContent = `${formatPKR(t.priceCouple)} / Couple`;
-
+    // Itinerary — stored as one free-text paragraph (the DB column is
+    // plain text). Older tours saved before this change may still have
+    // the array-of-days shape, so that's still supported here.
     const modalItinerary = document.getElementById('modalItinerary');
-    if (modalItinerary) modalItinerary.innerHTML = t.itinerary.map(d => `<div><b>Day ${d.day}:</b> ${d.text}</div>`).join('');
+    if (modalItinerary) {
+      if (typeof t.itinerary === 'string' && t.itinerary.trim()) {
+        modalItinerary.style.whiteSpace = 'pre-line';
+        modalItinerary.textContent = t.itinerary.trim();
+      } else if (Array.isArray(t.itinerary) && t.itinerary.length) {
+        modalItinerary.innerHTML = t.itinerary.map(d => `<div><b>Day ${d.day}:</b> ${d.text}</div>`).join('');
+      } else {
+        modalItinerary.textContent = '';
+      }
+    }
 
     const modalIncludes = document.getElementById('modalIncludes');
     if (modalIncludes) modalIncludes.innerHTML = (t.includes || []).map(i => `<li>✓ ${i}</li>`).join('');
@@ -173,11 +212,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalPaymentPolicy = document.getElementById('modalPaymentPolicy');
     const modalPaymentMethods = document.getElementById('modalPaymentMethods');
     if (paymentSection) {
-      if (t.payment) {
+      if (typeof t.payment === 'string' && t.payment.trim()) {
         paymentSection.style.display = '';
-        if (modalPaymentPolicy) modalPaymentPolicy.textContent = t.payment.policy;
+        if (modalPaymentPolicy) {
+          modalPaymentPolicy.style.whiteSpace = 'pre-line';
+          modalPaymentPolicy.textContent = t.payment.trim();
+        }
+        if (modalPaymentMethods) modalPaymentMethods.innerHTML = '';
+      } else if (t.payment && typeof t.payment === 'object') {
+        paymentSection.style.display = '';
+        if (modalPaymentPolicy) modalPaymentPolicy.textContent = t.payment.policy || '';
         if (modalPaymentMethods) {
-          modalPaymentMethods.innerHTML = t.payment.methods.map(m => `
+          modalPaymentMethods.innerHTML = (t.payment.methods || []).map(m => `
             <div class="modal-payment-card">
               <div class="method-label">${m.label}</div>
               <div class="method-name">${m.accountName}</div>
@@ -250,25 +296,6 @@ document.addEventListener("DOMContentLoaded", () => {
       render();
     });
   }
-
-  function getTourPrice(t) {
-  // 1. Check direct properties
-  if (t.priceHead) return t.priceHead;
-  if (t.price) return t.price;
-
-  // 2. Check nested cost structure
-  if (t.cost) {
-    if (t.cost.fromKarachi?.economyTrain?.perHead) {
-      return t.cost.fromKarachi.economyTrain.perHead;
-    }
-    if (t.cost.fromIslamabad?.withoutStay?.perHead) {
-      return t.cost.fromIslamabad.withoutStay.perHead;
-    }
-  }
-
-  return 0; // Fallback
-}
-
 
   buildFilters();
   render();

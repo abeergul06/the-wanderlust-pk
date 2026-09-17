@@ -73,11 +73,16 @@ function renderTour(t) {
   // Prices
   safeSetText("tdPriceHead", `Rs. ${Number(t.priceHead || t.price || 0).toLocaleString()} / person`);
   safeSetText("tdPriceCouple", `Rs. ${Number(t.priceCouple || (t.priceHead ? t.priceHead * 2.3 : 0)).toLocaleString()} for 2 persons`);
-  // Prices / Costs — the API returns a flat object like
-  // { lahore, islamabad, faisalabad, couplePackage }, one price per
-  // departure city plus an optional couple rate.
-  const CITY_LABELS = { lahore: "Lahore", islamabad: "Islamabad", faisalabad: "Faisalabad", karachi: "Karachi" };
-  if (t.cost) {
+
+  // Cost override — the admin can type a free-text price line (e.g. one
+  // price per departure city) that replaces the computed price-head text
+  // above. Tours saved before this field became plain text may still have
+  // it as a structured { lahore, islamabad, ..., couplePackage } object,
+  // so that shape is still supported here.
+  if (typeof t.cost === "string" && t.cost.trim()) {
+    safeSetText("tdPriceHead", t.cost.trim());
+  } else if (t.cost && typeof t.cost === "object") {
+    const CITY_LABELS = { lahore: "Lahore", islamabad: "Islamabad", faisalabad: "Faisalabad", karachi: "Karachi" };
     const cityEntries = Object.entries(t.cost).filter(([key, val]) => key !== "couplePackage" && val != null);
     if (cityEntries.length) {
       const priceHeadText = cityEntries
@@ -90,10 +95,18 @@ function renderTour(t) {
     }
   }
 
-  // Itinerary
+  // Itinerary — stored as one free-text paragraph covering the whole trip
+  // day by day (the "itinerary" column is plain text). Older tours saved
+  // before this change may still have the array-of-days shape, so that's
+  // still supported here.
   const itinerarySection = document.getElementById("tdItinerarySection");
   if (itinerarySection) {
-    if (Array.isArray(t.itinerary) && t.itinerary.length) {
+    if (typeof t.itinerary === "string" && t.itinerary.trim()) {
+      itinerarySection.style.display = "";
+      const el = document.getElementById("tdItinerary");
+      if (el) el.style.whiteSpace = "pre-line";
+      safeSetText("tdItinerary", t.itinerary.trim());
+    } else if (Array.isArray(t.itinerary) && t.itinerary.length) {
       itinerarySection.style.display = "";
       safeSetHTML("tdItinerary", t.itinerary.map((d, i) => `<div><b>Day ${d.day || i + 1}:</b> ${d.text || d.description || ""}</div>`).join(""));
     } else {
@@ -126,13 +139,22 @@ function renderTour(t) {
     }
   }
 
-  // Payment Procedure
+  // Payment Procedure — stored as one free-text block (the "payment"
+  // column is plain text). Older tours saved before this change may still
+  // have the structured { policy, methods[] } shape, so that's still
+  // supported here.
   const paymentSection = document.getElementById("tdPaymentSection");
   if (paymentSection) {
-    if (t.payment) {
+    if (typeof t.payment === "string" && t.payment.trim()) {
       paymentSection.style.display = "";
-      safeSetText("tdPaymentPolicy", t.payment.policy);
-      safeSetHTML("tdPaymentMethods", t.payment.methods.map(m => `
+      const el = document.getElementById("tdPaymentPolicy");
+      if (el) el.style.whiteSpace = "pre-line";
+      safeSetText("tdPaymentPolicy", t.payment.trim());
+      safeSetHTML("tdPaymentMethods", "");
+    } else if (t.payment && typeof t.payment === "object") {
+      paymentSection.style.display = "";
+      safeSetText("tdPaymentPolicy", t.payment.policy || "");
+      safeSetHTML("tdPaymentMethods", (t.payment.methods || []).map(m => `
         <div class="td-payment-card">
           <div class="method-label">${m.label}</div>
           <div class="method-name">${m.accountName}</div>
