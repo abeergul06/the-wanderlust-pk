@@ -283,8 +283,8 @@ async function loadTours() {
       fmtMoney(t.priceHead),
       activeBadge(t.active),
       `<div class="row-actions">
-         <button class="btn btn-ghost btn-sm" onclick="editTour('${t.slug}')">Edit</button>
-         <button class="btn btn-danger btn-sm" onclick="deleteTour('${t.slug}')">Delete</button>
+         <button class="btn btn-ghost btn-sm" onclick="editTour('${t.id}')">Edit</button>
+         <button class="btn btn-danger btn-sm" onclick="deleteTour('${t.id}')">Delete</button>
        </div>`,
     ]));
   } catch (err) { toast(err.message, true); }
@@ -294,7 +294,7 @@ function tourForm(t = {}) {
   const incStr = Array.isArray(t.includes) ? t.includes.join(', ') : '';
   const excStr = Array.isArray(t.excludes) ? t.excludes.join(', ') : '';
   return `
-    ${modalHeader(t.slug ? 'Edit tour' : 'Add tour')}
+    ${modalHeader(t.id ? 'Edit tour' : 'Add tour')}
     <form id="tour-form" class="modal-body">
       <div class="field"><label>Title</label><input id="t-title" value="${escapeHtml(t.title)}" required /></div>
       <div class="field-row">
@@ -310,12 +310,8 @@ function tourForm(t = {}) {
       <div class="field"><label>Transport</label><input id="t-transport" value="${escapeHtml(t.transport)}" placeholder="e.g. AC Coaster" /></div>
       <div class="field"><label>Includes (comma separated)</label><textarea id="t-includes" rows="2">${escapeHtml(incStr)}</textarea></div>
       <div class="field"><label>Excludes (comma separated)</label><textarea id="t-excludes" rows="2">${escapeHtml(excStr)}</textarea></div>
-      <div class="field"><label>Cost breakdown (free text, optional)</label><textarea id="t-cost" rows="3" placeholder="Lahore: Rs. 30,000 | Islamabad: Rs. 30,000 | Couple package: Rs. 70,000">${escapeHtml(costToText(t.cost))}</textarea></div>
+      <div class="field"><label>Cost breakdown (free text, shown on tour page)</label><textarea id="t-cost" rows="6" placeholder="TRIP COST FROM KARACHI:&#10;Economy Train: Single 49,000/- Couple 110,000/-&#10;AC Standard Train: Single 61,000/- Couple 133,000/-&#10;...">${escapeHtml(costToText(t.cost))}</textarea></div>
       <div class="field"><label>Payment plan (free text, optional)</label><textarea id="t-payment" rows="3" placeholder="50% advance required. JazzCash: Muhammad Azam - 0303-9465839">${escapeHtml(paymentToText(t.payment))}</textarea></div>
-      <div class="field">
-        <label>Cost Breakdown (free text, shown on tour page)</label>
-        <textarea id="t-cost-breakdown" rows="8" placeholder="TRIP COST FROM KARACHI:&#10;Economy Train: Single 49,000/- Couple 110,000/-&#10;AC Standard Train: Single 61,000/- Couple 133,000/-&#10;...">${escapeHtml(t.costBreakdown || '')}</textarea>
-      </div>
 
       <div class="field">
         <label><strong>Itinerary</strong> (one paragraph, day by day)</label>
@@ -329,7 +325,7 @@ function tourForm(t = {}) {
       </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" id="modal-cancel-btn">Cancel</button>
-        <button type="submit" class="btn">${t.slug ? 'Save changes' : 'Add tour'}</button>
+        <button type="submit" class="btn">${t.id ? 'Save changes' : 'Add tour'}</button>
       </div>
     </form>`;
 }
@@ -339,14 +335,14 @@ document.getElementById('add-tour-btn').addEventListener('click', () => {
   bindTourForm(null);
 });
 
-function editTour(slug) {
-  const t = toursCache.find((x) => x.slug === slug);
+function editTour(id) {
+  const t = toursCache.find((x) => x.id === id);
   if (!t) return toast('Tour not found.', true);
   openModal(tourForm(t));
-  bindTourForm(slug);
+  bindTourForm(id);
 }
 
-function bindTourForm(slug) {
+function bindTourForm(id) {
   document.getElementById('tour-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -368,23 +364,22 @@ function bindTourForm(slug) {
       excludes: document.getElementById('t-excludes').value.split(',').map((s) => s.trim()).filter(Boolean),
       cost,
       payment,
-      costBreakdown: document.getElementById('t-cost-breakdown').value.trim(),
       itinerary: itinerary,
       image: document.getElementById('t-image').value.trim(),
       featured: document.getElementById('t-featured').checked,
       active: document.getElementById('t-active').checked,
     };
     try {
-      await apiRequest(slug ? `/admin/tours/${slug}` : '/admin/tours', { method: slug ? 'PUT' : 'POST', body });
-      toast(slug ? 'Tour updated.' : 'Tour added.');
+      await apiRequest(id ? `/admin/tours/${id}` : '/admin/tours', { method: id ? 'PUT' : 'POST', body });
+      toast(id ? 'Tour updated.' : 'Tour added.');
       closeModal(); loadTours();
     } catch (err) { toast(err.message, true); }
   });
 }
 
-async function deleteTour(slug) {
+async function deleteTour(id) {
   if (!confirm('Delete this tour?')) return;
-  try { await apiRequest(`/admin/tours/${slug}`, { method: 'DELETE' }); toast('Tour deleted.'); loadTours(); }
+  try { await apiRequest(`/admin/tours/${id}`, { method: 'DELETE' }); toast('Tour deleted.'); loadTours(); }
   catch (err) { toast(err.message, true); }
 }
 
@@ -401,7 +396,7 @@ async function loadGallery() {
     const container = document.getElementById('gallery-table');
     if (!items.length) return (container.innerHTML = emptyState('No photos yet.'));
     container.innerHTML = renderTable(['Destination', 'Order', 'Active', ''], items.map((g) => [
-      escapeHtml(g.destination_slug), g.order,
+      escapeHtml(g.destinationSlug), g.order,
       activeBadge(g.active),
       `<div class="row-actions"><button class="btn btn-ghost btn-sm" onclick="editGallery('${g.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteGallery('${g.id}')">Delete</button></div>`,
     ]));
@@ -409,7 +404,7 @@ async function loadGallery() {
 }
 
 function galleryForm(g = {}) {
-  const options = destinationsCache.map((d) => `<option value="${escapeHtml(d.slug)}" ${g.destination_slug === d.slug ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('');
+  const options = destinationsCache.map((d) => `<option value="${escapeHtml(d.slug)}" ${g.destinationSlug === d.slug ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('');
   return `
     ${modalHeader(g.id ? 'Edit photo' : 'Add photo')}
     <form id="gallery-form" class="modal-body">
@@ -428,7 +423,7 @@ function galleryForm(g = {}) {
       <div class="form-group">
         <label for="gal-image">Photo</label>
         <input type="file" id="gal-image" accept="image/*" ${g.id ? '' : 'required'} />
-        ${g.image_url ? `<p style="margin-top:6px; font-size:12px; color:#666;">Current photo is set — choose a file only to replace it.</p>` : ''}
+        ${g.imageUrl ? `<p style="margin-top:6px; font-size:12px; color:#666;">Current photo is set — choose a file only to replace it.</p>` : ''}
       </div>
       <label style="display:flex; align-items:center; gap:6px;">
         <input type="checkbox" id="gal-tall" style="width:auto;" ${g.tall ? 'checked' : ''} />Tall image (masonry layout)
@@ -455,9 +450,9 @@ function bindGalleryForm(id, currentImage) {
       let image = currentImage || null;
       if (file) image = await uploadImage(file);
       const body = {
-        destination_slug: document.getElementById('gal-destination').value,
+        destinationSlug: document.getElementById('gal-destination').value,
         order: Number(document.getElementById('gal-order').value) || 0,
-        image_url: image,
+        imageUrl: image,
         badge: document.getElementById('gal-badge').value.trim(),
         tall: document.getElementById('gal-tall').checked,
         active: document.getElementById('gal-active').checked,
@@ -486,7 +481,7 @@ function editGallery(id) {
   const g = galleryCache.find((x) => x.id === id);
   if (!g) return toast('Photo not found.', true);
   openModal(galleryForm(g));
-  bindGalleryForm(id, g.image_url);
+  bindGalleryForm(id, g.imageUrl);
 }
 
 async function deleteGallery(id) {
