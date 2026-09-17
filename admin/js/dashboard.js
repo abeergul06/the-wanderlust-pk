@@ -538,11 +538,37 @@ async function deleteFeedback(id) {
 async function loadContact() {
   try {
     const { messages } = await apiRequest('/admin/contact');
+    contactCache = messages;
     const container = document.getElementById('contact-table');
     if (!messages.length) return (container.innerHTML = emptyState('No messages yet.'));
-    container.innerHTML = renderTable(['Name', 'Email', 'Subject', 'Message'], messages.map((m) => [
+    container.innerHTML = renderTable(['Name', 'Email', 'Subject', 'Message', 'Status', ''], messages.map((m) => [
       escapeHtml(m.name), escapeHtml(m.email), escapeHtml(m.subject), escapeHtml(m.message),
+      `<select onchange="updateContactStatus('${m.id}', this.value)" class="status-select">
+         <option value="new" ${m.status === 'new' ? 'selected' : ''}>New</option>
+         <option value="read" ${m.status === 'read' ? 'selected' : ''}>Read</option>
+         <option value="replied" ${m.status === 'replied' ? 'selected' : ''}>Replied</option>
+       </select>`,
+      `<button class="btn btn-danger btn-sm" onclick="deleteContact('${m.id}')">Delete</button>`,
     ]));
+  } catch (err) { toast(err.message, true); }
+}
+
+let contactCache = [];
+
+async function updateContactStatus(id, status) {
+  try {
+    await apiRequest(`/admin/contact/${id}`, { method: 'PATCH', body: { status } });
+    toast('Status updated.');
+    loadContact();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function deleteContact(id) {
+  if (!confirm('Delete this message?')) return;
+  try {
+    await apiRequest(`/admin/contact/${id}`, { method: 'DELETE' });
+    toast('Message deleted.');
+    loadContact();
   } catch (err) { toast(err.message, true); }
 }
 
