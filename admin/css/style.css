@@ -40,6 +40,10 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
@@ -148,6 +152,7 @@ button {
   background: var(--brand-cyan);
   color: #FFFFFF;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .btn:hover {
@@ -290,17 +295,21 @@ button {
   font-size: 12px;
   color: var(--ink-muted);
   padding: 0 8px 12px;
+  overflow-wrap: anywhere;
 }
 
 .main {
   padding: 32px 40px 60px;
   overflow-y: auto;
+  min-width: 0; /* allow grid child to shrink below content width */
 }
 
 .main-header {
   display: flex;
-  align-items: baseline;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 28px;
 }
 
@@ -369,6 +378,8 @@ button {
   justify-content: space-between;
   padding: 16px 20px;
   border-bottom: 1px solid var(--border-line);
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .panel-head h2 {
@@ -377,9 +388,27 @@ button {
   color: var(--brand-navy);
 }
 
+/*
+  dashboard.js injects a <table> into containers whose ids end in
+  "-table" (#destinations-table, #tours-table, #gallery-table,
+  #feedback-table, #contact-table). Rather than depend on markup we
+  don't control, target them by id pattern so any table gets a
+  horizontal scroller on narrow screens instead of squashing or
+  breaking out of the panel.
+*/
+[id$="-table"] {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
+}
+
+[id$="-table"] table {
+  min-width: 640px;
 }
 
 th,
@@ -388,6 +417,7 @@ td {
   padding: 12px 20px;
   font-size: 13.5px;
   border-bottom: 1px solid var(--border-line);
+  white-space: nowrap;
 }
 
 th {
@@ -414,6 +444,7 @@ tr:hover td {
   border-radius: 20px;
   font-size: 11.5px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .badge-pending,
@@ -442,6 +473,7 @@ tr:hover td {
 .row-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: nowrap; /* row lives inside the scrollable table, so don't wrap */
 }
 
 .empty-state {
@@ -489,6 +521,7 @@ tr:hover td {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  gap: 12px;
 }
 
 .modal-header h2 {
@@ -557,6 +590,7 @@ tr:hover td {
   gap: 10px;
   justify-content: flex-end;
   margin-top: 24px;
+  flex-wrap: wrap;
 }
 
 .field-row {
@@ -569,6 +603,9 @@ tr:hover td {
   position: fixed;
   bottom: 24px;
   right: 24px;
+  left: 24px;
+  max-width: 380px;
+  margin-left: auto;
   background: var(--brand-navy);
   color: #FFFFFF;
   padding: 14px 20px;
@@ -596,6 +633,22 @@ tr:hover td {
   display: none !important;
 }
 
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+/* Tablet: tighten up before the sidebar collapses */
+@media (max-width: 1024px) {
+  .app {
+    grid-template-columns: 200px 1fr;
+  }
+
+  .main {
+    padding: 28px 24px 48px;
+  }
+}
+
+/* Sidebar collapses to a horizontal bar, content goes full-width */
 @media (max-width: 780px) {
   .app {
     grid-template-columns: 1fr;
@@ -610,25 +663,104 @@ tr:hover td {
     align-items: center;
     border-right: none;
     border-bottom: 1px solid var(--border-line);
+    padding: 10px 12px;
   }
 
   .sidebar .brand-mark {
     display: none;
   }
 
+  .nav-item {
+    white-space: nowrap;
+    width: auto;
+    margin-bottom: 0;
+  }
+
+  /* Keep sign-out reachable instead of hiding the whole footer:
+     drop the account label and pin a compact button to the end
+     of the scrollable nav bar. */
   .sidebar-footer {
+    margin-top: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-left: 12px;
+    border-top: none;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer .who {
     display: none;
   }
 
-  .nav-item {
-    white-space: nowrap;
+  .sidebar-footer .btn-full {
+    width: auto;
+    padding: 8px 14px;
+    font-size: 13px;
   }
 
   .main {
     padding: 20px;
   }
 
+  .main-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .main-header .btn {
+    width: 100%;
+  }
+
   .field-row {
     grid-template-columns: 1fr;
+  }
+
+  .modal-overlay {
+    padding: 20px 12px;
+    align-items: center;
+  }
+
+  .modal {
+    padding: 22px 18px;
+  }
+}
+
+/* Phone: smaller type/spacing, stacked modal actions, edge-to-edge toast */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 32px 22px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-card .num {
+    font-size: 26px;
+  }
+
+  th,
+  td {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .panel-head {
+    padding: 14px 16px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+  }
+
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: none;
   }
 }
