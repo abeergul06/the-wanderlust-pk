@@ -63,6 +63,11 @@ function renderTour(t) {
 
   safeSetText("tdDaysBadge", `${t.days}D / ${t.nights ?? (t.days - 1)}N`);
 
+  safeSetText("tdNights", `${t.nights ?? (t.days - 1)} Nights`);
+
+  const featuredBadge = document.getElementById("tdFeaturedBadge");
+  if (featuredBadge) featuredBadge.style.display = t.featured ? "inline-flex" : "none";
+
   const tags = getTags(t);
   safeSetHTML("tdTags", tags.map(tag => `<span${tag.highlight ? ' class="tag-highlight"' : ""}>${tag.label}</span>`).join(""));
   safeSetText("tdDesc", getDesc(t));
