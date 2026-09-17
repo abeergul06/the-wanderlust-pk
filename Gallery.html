@@ -156,8 +156,8 @@
         function galleryGroupHTML(slug, items) {
             const title = DEST_TITLES[slug] || (slug.charAt(0).toUpperCase() + slug.slice(1));
             const itemsHTML = items.map((item, i) => {
-                const img = item.imageUrl || item.image || item.url || "";
-                const badge = item.caption || item.badge || "";
+                const img = item.image_url || item.imageUrl || item.image || item.url || "";
+                const badge = item.badge || item.caption || "";
                 const tall = i === 0 ? " tall" : "";
                 return `
                     <div class="gallery-item${tall}">
