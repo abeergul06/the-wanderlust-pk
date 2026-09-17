@@ -156,7 +156,7 @@ async function loadDestinations() {
     container.innerHTML = renderTable(['Name', 'Region', 'Slug', 'Active', ''], destinations.map((d) => [
       escapeHtml(d.name), escapeHtml(d.region || '—'), escapeHtml(d.slug),
       activeBadge(d.active),
-      `<div class="row-actions"><button class="btn btn-ghost btn-sm" onclick="editDestination('${d.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteDestination('${d.id}')">Delete</button></div>`,
+      `<div class="row-actions"><button class="btn btn-ghost btn-sm" onclick="editDestination('${d.slug}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteDestination('${d.slug}')">Delete</button></div>`,
     ]));
   } catch (err) { toast(err.message, true); }
 }
@@ -190,7 +190,7 @@ function destinationForm(d = {}) {
         </div>
         <div class="form-group" style="flex: 1;">
           <label for="dest-image-url">Image URL</label>
-          <input type="text" id="dest-image-url" value="${escapeHtml(d.image_url)}" placeholder="https://..." />
+          <input type="text" id="dest-image-url" value="${escapeHtml(d.imageUrl)}" placeholder="https://..." />
         </div>
       </div>
       <div class="form-group">
@@ -223,7 +223,7 @@ function destinationForm(d = {}) {
     </form>`;
 }
 
-function bindDestinationForm(id) {
+function bindDestinationForm(slug) {
   document.getElementById('destination-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const body = {
@@ -232,7 +232,7 @@ function bindDestinationForm(id) {
       slug: document.getElementById('dest-slug').value.trim(),
       tagline: document.getElementById('dest-tagline').value.trim(),
       order: document.getElementById('dest-order').value ? Number(document.getElementById('dest-order').value) : null,
-      image_url: document.getElementById('dest-image-url').value.trim(),
+      imageUrl: document.getElementById('dest-image-url').value.trim(),
       description: document.getElementById('dest-description').value.trim(),
       route: document.getElementById('dest-route').value.trim(),
       history: document.getElementById('dest-history').value.trim(),
@@ -241,8 +241,8 @@ function bindDestinationForm(id) {
       active: document.getElementById('dest-active').checked,
     };
     try {
-      await apiRequest(id ? `/admin/destinations/${id}` : '/admin/destinations', { method: id ? 'PUT' : 'POST', body });
-      toast(id ? 'Destination updated.' : 'Destination added.');
+      await apiRequest(slug ? `/admin/destinations/${slug}` : '/admin/destinations', { method: slug ? 'PUT' : 'POST', body });
+      toast(slug ? 'Destination updated.' : 'Destination added.');
       closeModal(); loadDestinations();
     } catch (err) { toast(err.message, true); }
   });
@@ -253,16 +253,16 @@ document.getElementById('add-destination-btn').addEventListener('click', () => {
   bindDestinationForm(null);
 });
 
-function editDestination(id) {
-  const d = destinationsCache.find((x) => x.id === id);
+function editDestination(slug) {
+  const d = destinationsCache.find((x) => x.slug === slug);
   if (!d) return toast('Destination not found.', true);
   openModal(destinationForm(d));
-  bindDestinationForm(id);
+  bindDestinationForm(slug);
 }
 
-async function deleteDestination(id) {
+async function deleteDestination(slug) {
   if (!confirm('Delete this destination?')) return;
-  try { await apiRequest(`/admin/destinations/${id}`, { method: 'DELETE' }); toast('Destination deleted.'); loadDestinations(); }
+  try { await apiRequest(`/admin/destinations/${slug}`, { method: 'DELETE' }); toast('Destination deleted.'); loadDestinations(); }
   catch (err) { toast(err.message, true); }
 }
 
