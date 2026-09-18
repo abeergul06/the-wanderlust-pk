@@ -211,14 +211,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalExcluded = document.getElementById('modalExcluded');
     if (modalExcluded) modalExcluded.innerHTML = (t.excludes || []).map(i => `<li>✕ ${i}</li>`).join('');
 
-    // Cost Breakdown — free-text block set in the admin dashboard, same
-    // shape/handling as tdCostBreakdownSection on tour-detail.html.
+    // Cost Breakdown — free-text block set in the admin dashboard. The API
+    // returns this under the key "cost" (not "costBreakdown"), matching
+    // the "Cost breakdown (free text, shown on tour page)" admin field.
     const costBreakdownSection = document.getElementById('modalCostBreakdownSection');
     const modalCostBreakdown = document.getElementById('modalCostBreakdown');
     if (costBreakdownSection) {
-      if (typeof t.costBreakdown === 'string' && t.costBreakdown.trim()) {
+      if (typeof t.cost === 'string' && t.cost.trim()) {
         costBreakdownSection.style.display = '';
-        if (modalCostBreakdown) modalCostBreakdown.textContent = t.costBreakdown.trim();
+        if (modalCostBreakdown) modalCostBreakdown.textContent = t.cost.trim();
       } else {
         costBreakdownSection.style.display = 'none';
       }
