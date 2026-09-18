@@ -177,6 +177,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalDesc = document.getElementById('tourModalDesc');
     if (modalDesc) modalDesc.textContent = `Route: ${t.route}`;
 
+    const modalDeparture = document.getElementById('modalDeparture');
+    if (modalDeparture) modalDeparture.textContent = t.departure || 'Islamabad / Rawalpindi';
+
     const modalPrice = document.getElementById('tourModalPrice');
     if (modalPrice) {
       // Both prices share one element — the old code wrote the per-person
@@ -207,6 +210,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const modalExcluded = document.getElementById('modalExcluded');
     if (modalExcluded) modalExcluded.innerHTML = (t.excludes || []).map(i => `<li>✕ ${i}</li>`).join('');
+
+    // Cost Breakdown — free-text block set in the admin dashboard, same
+    // shape/handling as tdCostBreakdownSection on tour-detail.html.
+    const costBreakdownSection = document.getElementById('modalCostBreakdownSection');
+    const modalCostBreakdown = document.getElementById('modalCostBreakdown');
+    if (costBreakdownSection) {
+      if (typeof t.costBreakdown === 'string' && t.costBreakdown.trim()) {
+        costBreakdownSection.style.display = '';
+        if (modalCostBreakdown) modalCostBreakdown.textContent = t.costBreakdown.trim();
+      } else {
+        costBreakdownSection.style.display = 'none';
+      }
+    }
 
     const paymentSection = document.getElementById('modalPaymentSection');
     const modalPaymentPolicy = document.getElementById('modalPaymentPolicy');
