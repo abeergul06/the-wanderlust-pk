@@ -12,7 +12,7 @@
 //     }
 //   };
 //   update();
-}
+// }
 
 const statsObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
