@@ -1,17 +1,17 @@
 // 1. COUNT UP ANIMATION FOR STATS
-function animateCounter(el, target) {
-  let count = 0;
-  const speed = target / 100;
-  const update = () => {
-    count += speed;
-    if(count < target) {
-      el.innerText = Math.ceil(count) + "+";
-      requestAnimationFrame(update);
-    } else {
-      el.innerText = target + "+";
-    }
-  };
-  update();
+// function animateCounter(el, target) {
+//   let count = 0;
+//   const speed = target / 100;
+//   const update = () => {
+//     count += speed;
+//     if(count < target) {
+//       el.innerText = Math.ceil(count) + "+";
+//       requestAnimationFrame(update);
+//     } else {
+//       el.innerText = target + "+";
+//     }
+//   };
+//   update();
 }
 
 const statsObserver = new IntersectionObserver((entries) => {
