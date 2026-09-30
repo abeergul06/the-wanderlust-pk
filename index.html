@@ -219,7 +219,7 @@
             <option value="41000">Up to Rs. 41,000</option>
           </select>
         </div>
-        <a href="tours.html" class="btn btn-primary">Plan Your Trip</a>
+        <a href="tours.html" id="planTripBtn" class="btn btn-primary">Plan Your Trip</a>
         <a href="https://wa.me/923039465839?text=Hello%20The%20Wanderlust.pk%21%20I%20would%20like%20to%20customize%20my%20trip.%20Please%20help%20me%20plan%20a%20trip%20according%20to%20my%20destination%2C%20dates%2C%20duration%2C%20group%20size%2C%20and%20budget."
           class="btn btn-customize" target="_blank" rel="noopener">
           Customize Your Trip </a>
@@ -404,6 +404,25 @@
       <script src="common.js"></script>
       <script src="animation-stats.js"></script>
       <script src="tours-page.js"></script>
+      <script>
+        // Plan Your Trip: send the selected filters to tours.html as URL params
+        (function () {
+          var btn = document.getElementById('planTripBtn');
+          if (!btn) return;
+          btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var params = new URLSearchParams();
+            var dest = document.getElementById('planDest').value;
+            var days = document.getElementById('planDays').value;
+            var budget = document.getElementById('planBudget').value;
+            if (dest) params.set('dest', dest);
+            if (days) params.set('days', days);
+            if (budget) params.set('budget', budget);
+            var qs = params.toString();
+            window.location.href = 'tours.html' + (qs ? '?' + qs : '');
+          });
+        })();
+      </script>
   </footer>
 
 

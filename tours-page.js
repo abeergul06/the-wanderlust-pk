@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Build filters
   function buildFilters() {
     const durations = [...new Set(TOURS.map(t => lengthGroup(t.days)))];
-    const destinations = ["Swat", "Kashmir", "Naran", "Skardu", "Hunza", "Kumrat", "Astore", "Neelam"];
+    // Must include every destination offered in the homepage "Plan Your Trip" dropdown
+    const destinations = ["Swat", "Kashmir", "Naran", "Skardu", "Hunza", "Kumrat", "Astore", "Neelam", "Murree", "Fairy Meadows", "Minimarg"];
 
     if (durationList) {
       durationList.innerHTML = durations.map(d => `
@@ -74,6 +75,42 @@ document.addEventListener("DOMContentLoaded", () => {
       destList.innerHTML = destinations.map(d => `
         <label><input type="checkbox" class="destCheck" value="${d}"> ${d}</label>
       `).join('');
+    }
+  }
+
+  // Apply filters passed from the homepage "Plan Your Trip" box,
+  // e.g. tours.html?dest=Naran&days=5&budget=28000
+  function applyUrlFilters() {
+    const params = new URLSearchParams(window.location.search);
+
+    const dest = params.get('dest');
+    if (dest) {
+      const cb = [...document.querySelectorAll('.destCheck')]
+        .find(c => c.value.toLowerCase() === dest.toLowerCase());
+      if (cb) {
+        cb.checked = true;
+        state.dests.add(cb.value);
+      } else if (search) {
+        // Unknown destination: fall back to the text search box
+        state.search = dest.toLowerCase();
+        search.value = dest;
+      }
+    }
+
+    const days = parseInt(params.get('days'), 10);
+    if (days) {
+      const group = lengthGroup(days);
+      const cb = document.querySelector('.lengthCheck[value="' + group + '"]');
+      if (cb) {
+        cb.checked = true;
+        state.length.add(group);
+      }
+    }
+
+    const budget = parseInt(params.get('budget'), 10);
+    if (budget && priceRange) {
+      priceRange.value = budget;
+      state.maxPrice = Number(priceRange.value);
     }
   }
 
@@ -315,5 +352,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   buildFilters();
+  applyUrlFilters();
   render();
 });
