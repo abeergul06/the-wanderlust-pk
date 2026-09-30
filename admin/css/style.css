@@ -2228,3 +2228,110 @@ td button {
     animation-iteration-count: 1 !important;
   }
 }
+/* ============================================================
+   READ MORE — TABLE CELLS
+   ============================================================ */
+
+.cell-content {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cell-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+
+  overflow: hidden;
+
+  max-width: 100%;
+
+  line-height: 1.45;
+
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.cell-preview.expanded {
+  display: block;
+
+  -webkit-line-clamp: unset;
+
+  max-height: none;
+
+  overflow: visible;
+}
+
+.read-more-btn {
+  display: inline-flex;
+
+  align-items: center;
+
+  margin-top: 5px;
+
+  padding: 3px 7px;
+
+  color: var(--brand-cyan-hover);
+
+  background: var(--brand-cyan-light);
+
+  border: 0;
+
+  border-radius: 5px;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  line-height: 1.3;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.read-more-btn:hover {
+  color: #fff;
+
+  background: var(--brand-cyan);
+}
+
+
+/* Don't restrict buttons/action cells */
+
+td[data-label="Actions"] .cell-preview,
+td.actions-cell .cell-preview {
+  display: block;
+
+  -webkit-line-clamp: unset;
+
+  overflow: visible;
+}
+
+
+/* Mobile */
+
+@media (max-width: 780px) {
+
+  .cell-preview {
+    -webkit-line-clamp: 2;
+
+    line-height: 1.45;
+  }
+
+  .read-more-btn {
+    min-height: 30px;
+
+    margin-top: 5px;
+
+    padding: 5px 8px;
+
+    font-size: 10.5px;
+  }
+}

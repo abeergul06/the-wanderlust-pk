@@ -578,4 +578,48 @@ const loaders = {
   feedback: loadFeedback, contact: loadContact,
   tours: loadTours, gallery: loadGallery,
 };
+function renderCellText(value, label = '') {
+  const text = value == null || value === '' ? '—' : String(value);
+
+  const escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
+  const needsReadMore = text.length > 100 || text.split(/\s+/).length > 18;
+
+  if (!needsReadMore) {
+    return `
+      <div class="cell-content">
+        <div class="cell-preview">${escaped}</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="cell-content">
+      <div class="cell-preview">${escaped}</div>
+      <button
+        type="button"
+        class="read-more-btn"
+        onclick="toggleReadMore(this)"
+      >
+        Read more
+      </button>
+    </div>
+  `;
+};
+function toggleReadMore(button) {
+  const preview = button.previousElementSibling;
+
+  if (!preview) return;
+
+  const expanded = preview.classList.toggle('expanded');
+
+  button.textContent = expanded
+    ? 'Read less'
+    : 'Read more';
+};
 loadOverview();
