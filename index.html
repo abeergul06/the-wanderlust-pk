@@ -14,6 +14,34 @@
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .btn-customize {
+      background: var(--cyan);
+      color: #fff;
+      border: 1px solid var(--cyan);
+      text-decoration: none;
+    }
+
+    .btn-customize:hover {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-customize span {
+      margin-left: 6px;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 700px) {
+      .btn-customize {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -53,7 +81,8 @@
     </div>
     <div class="hero-slide" style="background-image:url('Skardu/IMG-20260908-WA0140.jpg'); animation-delay:7.14s;">
     </div>
-    <div class="hero-slide" style="background-image:url('Skardu/IMG-20260908-WA0220 copy.jpg'); animation-delay:10.71s;">
+    <div class="hero-slide"
+      style="background-image:url('Skardu/IMG-20260908-WA0220 copy.jpg'); animation-delay:10.71s;">
     </div>
     <div class="hero-slide" style="background-image:url('Naran/IMG-20260908-WA0262.jpg'); animation-delay:14.29s;">
     </div>
@@ -81,48 +110,6 @@
       <div><strong>100%</strong><span>Adventure</span></div>
     </div>
   </div>
-
-  <!-- FINDER
-  <div class="wrap finder-section">
-    <div class="finder">
-      <div class="finder-field">
-        <label>📍 Destination</label>
-        <select id="finderDest">
-          <option value="">Select region</option>
-          <option>Kashmir</option>
-          <option>Skardu</option>
-          <option>Gilgit</option>
-          <option>Fairy Meadows</option>
-          <option>Swat</option>
-          <option>Naran &amp; Kaghan</option>
-          <option>Hunza</option>
-        </select>
-      </div>
-      <div class="finder-field">
-        <label>🗓 Duration</label>
-        <select id="finderDuration">
-          <option value="">Select duration</option>
-          <option>3 Days</option>
-          <option>4 Days</option>
-          <option>5 Days</option>
-          <option>6 Days</option>
-          <option>7 Days</option>
-          <option>8 Days</option>
-        </select>
-      </div>
-      <div class="finder-field">
-        <label>🎖 Plan Category</label>
-        <select id="finderCategory">
-          <option value="">Select category</option>
-          <option>Family</option>
-          <option>Couple</option>
-          <option>Group</option>
-          <option>Solo</option>
-        </select>
-      </div>
-      <a href="tours.html" class="btn btn-primary">Search Plans</a>
-    </div>
-  </div> -->
 
   <!-- ABOUT -->
   <section class="about" id="about">
@@ -233,6 +220,9 @@
           </select>
         </div>
         <a href="tours.html" class="btn btn-primary">Plan Your Trip</a>
+        <a href="https://wa.me/923039465839?text=Hello%20The%20Wanderlust.pk%21%20I%20would%20like%20to%20customize%20my%20trip.%20Please%20help%20me%20plan%20a%20trip%20according%20to%20my%20destination%2C%20dates%2C%20duration%2C%20group%20size%2C%20and%20budget."
+          class="btn btn-customize" target="_blank" rel="noopener">
+          Customize Your Trip </a>
         <p class="terms-note">By searching you agree to our <a href="terms.html" target="_blank">terms for booking</a>.
         </p>
       </div>
