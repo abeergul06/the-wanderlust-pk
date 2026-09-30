@@ -405,22 +405,38 @@
       <script src="animation-stats.js"></script>
       <script src="tours-page.js"></script>
       <script>
-        // Plan Your Trip: send the selected filters to tours.html as URL params
+        // Plan Your Trip: send the selected filters to tours.html as URL params.
+        // The button's own href is kept up to date, so it works even if another
+        // script (e.g. common.js) handles link clicks itself.
         (function () {
           var btn = document.getElementById('planTripBtn');
-          if (!btn) return;
-          btn.addEventListener('click', function (e) {
-            e.preventDefault();
+          var dest = document.getElementById('planDest');
+          var days = document.getElementById('planDays');
+          var budget = document.getElementById('planBudget');
+          if (!btn || !dest || !days || !budget) return;
+
+          function buildUrl() {
             var params = new URLSearchParams();
-            var dest = document.getElementById('planDest').value;
-            var days = document.getElementById('planDays').value;
-            var budget = document.getElementById('planBudget').value;
-            if (dest) params.set('dest', dest);
-            if (days) params.set('days', days);
-            if (budget) params.set('budget', budget);
+            if (dest.value) params.set('dest', dest.value);
+            if (days.value) params.set('days', days.value);
+            if (budget.value) params.set('budget', budget.value);
             var qs = params.toString();
-            window.location.href = 'tours.html' + (qs ? '?' + qs : '');
-          });
+            return 'tours.html' + (qs ? '?' + qs : '');
+          }
+
+          function sync() {
+            btn.setAttribute('href', buildUrl());
+            // Backup in case the host drops the query string on redirect
+            try {
+              sessionStorage.setItem('planFilters', JSON.stringify({
+                dest: dest.value, days: days.value, budget: budget.value
+              }));
+            } catch (e) {}
+          }
+
+          [dest, days, budget].forEach(function (el) { el.addEventListener('change', sync); });
+          btn.addEventListener('click', sync, true); // capture: runs before any other click handler
+          sync();
         })();
       </script>
   </footer>
