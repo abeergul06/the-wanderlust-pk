@@ -1,9 +1,10 @@
 /* ============================================================
    THE WANDERLUST.PK — ADMIN PANEL
-   Mobile First • Responsive • Touch Friendly
+   Clean • Responsive • Mobile Friendly
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
 
 /* ============================================================
    ROOT
@@ -48,6 +49,7 @@
   --sidebar-width: 240px;
 }
 
+
 /* ============================================================
    RESET
    ============================================================ */
@@ -61,13 +63,16 @@
 html {
   width: 100%;
   min-height: 100%;
+
   -webkit-text-size-adjust: 100%;
+
   scroll-behavior: smooth;
 }
 
 body {
   width: 100%;
   min-height: 100vh;
+
   margin: 0;
 
   font-family:
@@ -85,6 +90,7 @@ body {
   background: var(--bg-main);
 
   overflow-x: hidden;
+
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -134,6 +140,7 @@ a {
   display: none !important;
 }
 
+
 /* ============================================================
    LOGIN
    ============================================================ */
@@ -145,7 +152,7 @@ a {
   align-items: center;
   justify-content: center;
 
-  padding: 20px;
+  padding: 24px;
 
   background:
     radial-gradient(
@@ -159,11 +166,12 @@ a {
   width: 100%;
   max-width: 400px;
 
-  padding: 36px 32px;
+  padding: 40px 36px;
 
   background: var(--bg-card);
 
   border: 1px solid rgba(255, 255, 255, 0.1);
+
   border-radius: 15px;
 
   box-shadow:
@@ -183,8 +191,14 @@ a {
   margin: 0 0 28px;
 
   color: var(--ink-muted);
+
   font-size: 14px;
 }
+
+
+/* ============================================================
+   FIELDS
+   ============================================================ */
 
 .field {
   margin-bottom: 18px;
@@ -211,9 +225,11 @@ a {
   padding: 11px 14px;
 
   color: var(--ink-main);
+
   background: #fff;
 
   border: 1px solid var(--border-line);
+
   border-radius: var(--radius-sm);
 
   font-size: 14px;
@@ -225,6 +241,7 @@ a {
 
 .field textarea {
   min-height: 110px;
+
   resize: vertical;
 }
 
@@ -239,12 +256,14 @@ a {
     0 0 0 3px var(--brand-cyan-glow);
 }
 
+
 /* ============================================================
    BUTTONS
    ============================================================ */
 
 .btn {
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
@@ -255,9 +274,11 @@ a {
   padding: 10px 18px;
 
   color: #fff;
+
   background: var(--brand-cyan);
 
   border: 1px solid transparent;
+
   border-radius: var(--radius-sm);
 
   font-size: 14px;
@@ -273,6 +294,7 @@ a {
 
 .btn:hover {
   background: var(--brand-cyan-hover);
+
   transform: translateY(-1px);
 }
 
@@ -286,13 +308,17 @@ a {
 
 .btn-ghost {
   color: #fff;
+
   background: #0096c7;
+
   border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-ghost:hover {
   color: #fff;
+
   background: #007fa8;
+
   transform: none;
 }
 
@@ -311,6 +337,7 @@ a {
 
   font-size: 12.5px;
 }
+
 
 /* ============================================================
    ERROR / HINT
@@ -336,11 +363,13 @@ a {
   color: var(--ink-muted);
 
   font-size: 12.5px;
+
   text-align: center;
 }
 
+
 /* ============================================================
-   APP
+   APP LAYOUT
    ============================================================ */
 
 .app {
@@ -351,8 +380,10 @@ a {
     minmax(0, 1fr);
 
   width: 100%;
+
   min-height: 100vh;
 }
+
 
 /* ============================================================
    SIDEBAR
@@ -360,12 +391,15 @@ a {
 
 .sidebar {
   position: sticky;
+
   top: 0;
 
   width: var(--sidebar-width);
+
   height: 100vh;
 
   display: flex;
+
   flex-direction: column;
 
   padding: 24px 16px;
@@ -375,6 +409,7 @@ a {
   border-right: 1px solid var(--border-line);
 
   overflow-y: auto;
+
   overflow-x: hidden;
 
   z-index: 100;
@@ -384,6 +419,7 @@ a {
   flex-shrink: 0;
 
   margin: 0 0 16px;
+
   padding: 0 8px 20px;
 
   color: var(--brand-navy);
@@ -391,6 +427,7 @@ a {
   border-bottom: 1px solid var(--border-line);
 
   font-size: 20px;
+
   font-weight: 800;
 }
 
@@ -406,6 +443,7 @@ a {
     sans-serif;
 
   font-size: 11px;
+
   font-weight: 600;
 
   letter-spacing: 0.05em;
@@ -413,12 +451,14 @@ a {
   text-transform: uppercase;
 }
 
+
 /* ============================================================
    SIDEBAR NAV
    ============================================================ */
 
 .sidebar-nav {
   display: flex;
+
   flex-direction: column;
 
   gap: 4px;
@@ -430,6 +470,7 @@ a {
   width: 100%;
 
   display: flex;
+
   align-items: center;
 
   gap: 10px;
@@ -439,12 +480,15 @@ a {
   padding: 10px 14px;
 
   color: var(--ink-muted);
+
   background: transparent;
 
   border: 0;
+
   border-radius: var(--radius-sm);
 
   font-size: 14px;
+
   font-weight: 500;
 
   text-align: left;
@@ -456,11 +500,13 @@ a {
 
 .nav-item:hover {
   color: var(--brand-navy);
+
   background: var(--bg-muted);
 }
 
 .nav-item.active {
   color: var(--brand-cyan-hover);
+
   background: var(--brand-cyan-light);
 
   font-weight: 600;
@@ -472,18 +518,22 @@ a {
   padding: 2px 8px;
 
   color: var(--ink-muted);
+
   background: var(--bg-muted);
 
   border-radius: 12px;
 
   font-size: 11px;
+
   font-weight: 600;
 }
 
 .nav-item.active .count {
   color: #fff;
+
   background: var(--brand-cyan);
 }
+
 
 /* ============================================================
    SIDEBAR FOOTER
@@ -501,6 +551,7 @@ a {
   max-width: 100%;
 
   margin-bottom: 10px;
+
   padding: 0 8px;
 
   color: var(--ink-muted);
@@ -510,12 +561,14 @@ a {
   overflow-wrap: anywhere;
 }
 
+
 /* ============================================================
    MAIN
    ============================================================ */
 
 .main {
   width: 100%;
+
   min-width: 0;
 
   padding: 32px 40px 60px;
@@ -525,6 +578,7 @@ a {
 
 .view {
   width: 100%;
+
   min-width: 0;
 }
 
@@ -532,7 +586,9 @@ a {
   width: 100%;
 
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   gap: 18px;
@@ -550,6 +606,7 @@ a {
   color: var(--brand-navy);
 
   font-size: 26px;
+
   font-weight: 800;
 
   line-height: 1.25;
@@ -562,6 +619,7 @@ a {
 
   font-size: 14px;
 }
+
 
 /* ============================================================
    STAT CARDS
@@ -586,6 +644,7 @@ a {
   background: var(--bg-card);
 
   border: 1px solid var(--border-line);
+
   border-top: 3px solid var(--brand-cyan);
 
   border-radius: var(--radius);
@@ -599,6 +658,7 @@ a {
 
 .stat-card:hover {
   transform: translateY(-2px);
+
   box-shadow: var(--shadow-md);
 }
 
@@ -610,6 +670,7 @@ a {
     sans-serif;
 
   font-size: 30px;
+
   font-weight: 800;
 
   line-height: 1.1;
@@ -621,8 +682,10 @@ a {
   color: var(--ink-muted);
 
   font-size: 13px;
+
   font-weight: 500;
 }
+
 
 /* ============================================================
    PANELS
@@ -630,11 +693,13 @@ a {
 
 .panel {
   width: 100%;
+
   min-width: 0;
 
   background: var(--bg-card);
 
   border: 1px solid var(--border-line);
+
   border-radius: var(--radius);
 
   box-shadow: var(--shadow-sm);
@@ -644,7 +709,9 @@ a {
 
 .panel-head {
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   gap: 12px;
@@ -662,38 +729,30 @@ a {
   font-size: 17px;
 }
 
+
 /* ============================================================
-   TABLE WRAPPER
+   TABLE — DESKTOP
    ============================================================ */
 
 [id$="-table"] {
   width: 100%;
+
   max-width: 100%;
 
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  -webkit-overflow-scrolling: touch;
-
-  scrollbar-width: thin;
+  overflow: visible;
 }
 
 [id$="-table"] table {
   width: 100%;
 
-  min-width: 760px;
-
   border-collapse: collapse;
+
   border-spacing: 0;
 }
 
-/* ============================================================
-   TABLE CELLS
-   ============================================================ */
-
 th,
 td {
-  padding: 12px 20px;
+  padding: 12px 18px;
 
   color: var(--ink-main);
 
@@ -708,9 +767,11 @@ td {
 
 th {
   color: var(--ink-muted);
+
   background: var(--bg-muted);
 
   font-size: 11.5px;
+
   font-weight: 600;
 
   letter-spacing: 0.05em;
@@ -724,6 +785,7 @@ td {
   white-space: normal;
 
   overflow-wrap: anywhere;
+
   word-break: break-word;
 }
 
@@ -734,6 +796,7 @@ tr:last-child td {
 tr:hover td {
   background: var(--bg-main);
 }
+
 
 /* ============================================================
    TABLE CONTENT
@@ -750,6 +813,7 @@ td .description {
   white-space: normal;
 
   overflow-wrap: anywhere;
+
   word-break: break-word;
 }
 
@@ -759,12 +823,14 @@ td button {
   white-space: nowrap;
 }
 
+
 /* ============================================================
    BADGES
    ============================================================ */
 
 .badge {
   display: inline-flex;
+
   align-items: center;
 
   padding: 4px 10px;
@@ -772,6 +838,7 @@ td button {
   border-radius: 20px;
 
   font-size: 11.5px;
+
   font-weight: 600;
 
   white-space: nowrap;
@@ -780,6 +847,7 @@ td button {
 .badge-pending,
 .badge-new {
   color: #92400e;
+
   background: #fef3c7;
 }
 
@@ -787,18 +855,22 @@ td button {
 .badge-read,
 .badge-approved {
   color: #065f46;
+
   background: #d1fae5;
 }
 
 .badge-cancelled {
   color: #991b1b;
+
   background: #fee2e2;
 }
 
 .badge-replied {
   color: var(--brand-cyan-hover);
+
   background: var(--brand-cyan-light);
 }
+
 
 /* ============================================================
    ROW ACTIONS
@@ -806,14 +878,16 @@ td button {
 
 .row-actions {
   display: flex;
+
   align-items: center;
 
   gap: 7px;
 
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 
-  white-space: nowrap;
+  white-space: normal;
 }
+
 
 /* ============================================================
    EMPTY STATE
@@ -829,16 +903,20 @@ td button {
   text-align: center;
 }
 
+
 /* ============================================================
    MODAL
    ============================================================ */
 
 .modal-overlay {
   position: fixed;
+
   inset: 0;
 
   display: none;
+
   align-items: flex-start;
+
   justify-content: center;
 
   padding: 40px 20px;
@@ -866,6 +944,7 @@ td button {
   background: var(--bg-card);
 
   border: 1px solid rgba(255, 255, 255, 0.4);
+
   border-radius: 14px;
 
   box-shadow: var(--shadow-lg);
@@ -881,13 +960,16 @@ td button {
   font-size: 19px;
 }
 
+
 /* ============================================================
    MODAL HEADER
    ============================================================ */
 
 .modal-header {
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   gap: 12px;
@@ -907,6 +989,7 @@ td button {
     sans-serif;
 
   font-size: 19px;
+
   font-weight: 700;
 }
 
@@ -914,26 +997,34 @@ td button {
   flex: 0 0 auto;
 
   width: 40px;
+
   height: 40px;
 
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
 
   color: var(--ink-muted);
+
   background: transparent;
 
   border: 0;
+
   border-radius: 7px;
 
   font-size: 22px;
+
   line-height: 1;
 }
 
 .modal-close:hover {
   color: var(--ink-main);
+
   background: var(--bg-muted);
 }
+
 
 /* ============================================================
    MODAL BODY
@@ -941,6 +1032,7 @@ td button {
 
 .modal-body {
   display: flex;
+
   flex-direction: column;
 
   gap: 16px;
@@ -958,6 +1050,7 @@ td button {
   color: var(--brand-navy);
 
   font-size: 13px;
+
   font-weight: 600;
 }
 
@@ -971,9 +1064,11 @@ td button {
   padding: 11px 14px;
 
   color: var(--ink-main);
+
   background: #fff;
 
   border: 1px solid var(--border-line);
+
   border-radius: var(--radius-sm);
 
   font-size: 14px;
@@ -1002,8 +1097,10 @@ td button {
 
 .form-group input[type='checkbox'] {
   width: auto;
+
   min-height: auto;
 }
+
 
 /* ============================================================
    FORM ROW
@@ -1018,12 +1115,14 @@ td button {
   gap: 12px;
 }
 
+
 /* ============================================================
    MODAL ACTIONS
    ============================================================ */
 
 .modal-actions {
   display: flex;
+
   justify-content: flex-end;
 
   gap: 10px;
@@ -1033,6 +1132,7 @@ td button {
   flex-wrap: wrap;
 }
 
+
 /* ============================================================
    TOAST
    ============================================================ */
@@ -1041,6 +1141,7 @@ td button {
   position: fixed;
 
   right: 24px;
+
   bottom: 24px;
 
   width: min(380px, calc(100vw - 32px));
@@ -1048,11 +1149,13 @@ td button {
   padding: 14px 20px;
 
   color: #fff;
+
   background: var(--brand-navy);
 
   border-radius: var(--radius-sm);
 
   font-size: 13.5px;
+
   font-weight: 500;
 
   box-shadow: var(--shadow-lg);
@@ -1080,6 +1183,7 @@ td button {
   background: var(--red);
 }
 
+
 /* ============================================================
    TABLET
    ============================================================ */
@@ -1098,8 +1202,8 @@ td button {
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
   }
-
 }
+
 
 /* ============================================================
    MOBILE
@@ -1115,19 +1219,24 @@ td button {
     display: block;
 
     width: 100%;
+
     min-height: 100vh;
   }
 
+
   /* ----------------------------------------------------------
-     MOBILE SIDEBAR
+     SIDEBAR
      ---------------------------------------------------------- */
 
   .sidebar {
     position: sticky;
+
     top: 0;
 
     width: 100%;
+
     height: auto;
+
     min-height: 0;
 
     display: block;
@@ -1137,6 +1246,7 @@ td button {
     background: #fff;
 
     border: 0;
+
     border-bottom: 1px solid var(--border-line);
 
     overflow: visible;
@@ -1144,15 +1254,18 @@ td button {
     z-index: 100;
   }
 
+
   /* ----------------------------------------------------------
-     BRAND
+     MOBILE BRAND
      ---------------------------------------------------------- */
 
   .brand-mark {
     width: 100%;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     margin: 0;
@@ -1174,6 +1287,7 @@ td button {
     white-space: nowrap;
   }
 
+
   /* ----------------------------------------------------------
      MOBILE NAVIGATION
      ---------------------------------------------------------- */
@@ -1182,6 +1296,7 @@ td button {
     width: 100%;
 
     display: flex;
+
     flex-direction: row;
 
     gap: 6px;
@@ -1189,6 +1304,7 @@ td button {
     padding: 8px 10px;
 
     overflow-x: auto;
+
     overflow-y: hidden;
 
     -webkit-overflow-scrolling: touch;
@@ -1224,15 +1340,18 @@ td button {
     margin-left: 4px;
   }
 
+
   /* ----------------------------------------------------------
-     FOOTER
+     MOBILE FOOTER
      ---------------------------------------------------------- */
 
   .sidebar-footer {
     width: 100%;
 
     display: flex;
+
     align-items: center;
+
     justify-content: flex-end;
 
     margin: 0;
@@ -1256,12 +1375,14 @@ td button {
     font-size: 12px;
   }
 
+
   /* ----------------------------------------------------------
      MAIN
      ---------------------------------------------------------- */
 
   .main {
     width: 100%;
+
     min-width: 0;
 
     padding: 22px 16px 40px;
@@ -1269,8 +1390,9 @@ td button {
     overflow-x: hidden;
   }
 
+
   /* ----------------------------------------------------------
-     HEADER
+     MAIN HEADER
      ---------------------------------------------------------- */
 
   .main-header {
@@ -1303,8 +1425,9 @@ td button {
     min-height: 46px;
   }
 
+
   /* ----------------------------------------------------------
-     STATS
+     STAT CARDS
      ---------------------------------------------------------- */
 
   .stat-grid {
@@ -1332,72 +1455,299 @@ td button {
     line-height: 1.35;
   }
 
+
   /* ----------------------------------------------------------
-     PANELS
+     PANEL
      ---------------------------------------------------------- */
 
   .panel {
     width: 100%;
 
     border-radius: 9px;
+
+    overflow: visible;
+
+    background: transparent;
+
+    border: 0;
+
+    box-shadow: none;
   }
 
-  .panel-head {
-    padding: 14px 15px;
-  }
 
-  /* ----------------------------------------------------------
-     TABLE
-     ---------------------------------------------------------- */
+  /* ==========================================================
+     MOBILE TABLE → CARD
+     ========================================================== */
 
   [id$="-table"] {
     width: 100%;
 
-    overflow-x: auto;
-    overflow-y: hidden;
+    max-width: 100%;
 
-    border-radius: inherit;
-
-    touch-action: pan-x;
+    overflow: visible;
   }
+
+
+  /* Remove normal table layout */
 
   [id$="-table"] table {
+    width: 100%;
+
+    min-width: 0;
+
+    display: block;
+
+    border-collapse: separate;
+
+    border-spacing: 0;
+  }
+
+
+  /* Hide table header */
+
+  [id$="-table"] thead {
+    display: none;
+  }
+
+
+  /* Rows become cards */
+
+  [id$="-table"] tbody {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    padding: 0;
+  }
+
+
+  /* Each row */
+
+  [id$="-table"] tr {
+    width: 100%;
+
+    display: block;
+
+    margin: 0;
+
+    padding: 0;
+
+    background: #fff;
+
+    border: 1px solid var(--border-line);
+
+    border-radius: 10px;
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+  }
+
+
+  /* Hover */
+
+  [id$="-table"] tr:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+
+  /* Every cell */
+
+  [id$="-table"] td {
+    width: 100%;
+
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+      minmax(95px, 32%)
+      minmax(0, 1fr);
+
+    align-items: start;
+
+    gap: 10px;
+
+    padding: 11px 12px;
+
+    color: var(--ink-main);
+
+    background: #fff;
+
+    border-bottom: 1px solid var(--border-line);
+
+    font-size: 13px;
+
+    line-height: 1.45;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+  }
+
+
+  /* Last cell */
+
+  [id$="-table"] td:last-child {
+    border-bottom: 0;
+  }
+
+
+  /* Mobile labels */
+
+  [id$="-table"] td::before {
+    content: attr(data-label);
+
+    min-width: 0;
+
+    color: var(--ink-muted);
+
+    font-size: 10.5px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+
+    letter-spacing: 0.04em;
+
+    text-transform: uppercase;
+
+    overflow-wrap: anywhere;
+  }
+
+
+  /* If data-label doesn't exist */
+
+  [id$="-table"] td:not([data-label])::before {
+    content: '';
+  }
+
+
+  /* Cell content */
+
+  [id$="-table"] td > * {
+    min-width: 0;
+
+    max-width: 100%;
+  }
+
+
+  /* Text wrappers */
+
+  [id$="-table"] td .cell-text,
+  [id$="-table"] td .text-wrap,
+  [id$="-table"] td .read-more-text,
+  [id$="-table"] td .description {
+    display: block;
+
+    max-width: 100%;
+
+    min-width: 0;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+  }
+
+
+  /* Images inside cards */
+
+  [id$="-table"] td img {
+    width: 70px;
+
+    height: 55px;
+
+    object-fit: cover;
+
+    border-radius: 6px;
+  }
+
+
+  /* Badges */
+
+  [id$="-table"] td .badge {
     width: max-content;
 
-    min-width: 760px;
+    max-width: 100%;
   }
 
-  th,
-  td {
-    padding: 11px 14px;
-
-    font-size: 12.5px;
-  }
-
-  th {
-    font-size: 10.5px;
-  }
-
-  td .cell-text,
-  td .text-wrap,
-  td .read-more-text,
-  td .description {
-    max-width: 230px;
-  }
-
-  td button {
-    min-height: 38px;
-
-    padding: 7px 11px;
-  }
-
-  .row-actions {
-    gap: 6px;
-  }
 
   /* ----------------------------------------------------------
-     MODAL
+     ACTION CELL
      ---------------------------------------------------------- */
+
+  [id$="-table"] td:last-child {
+    display: block;
+
+    padding: 12px;
+  }
+
+  [id$="-table"] td:last-child::before {
+    display: block;
+
+    margin-bottom: 9px;
+  }
+
+
+  /* ----------------------------------------------------------
+     ACTION BUTTONS
+     ---------------------------------------------------------- */
+
+  .row-actions {
+    width: 100%;
+
+    display: flex;
+
+    align-items: stretch;
+
+    gap: 7px;
+
+    flex-wrap: wrap;
+  }
+
+  .row-actions .btn {
+    flex: 1 1 100px;
+
+    min-height: 40px;
+
+    padding: 8px 11px;
+
+    font-size: 12px;
+  }
+
+  [id$="-table"] td button {
+    min-height: 38px;
+
+    padding: 7px 10px;
+
+    font-size: 12px;
+  }
+
+
+  /* ----------------------------------------------------------
+     READ MORE
+     ---------------------------------------------------------- */
+
+  [id$="-table"] td .btn-sm {
+    width: auto;
+
+    min-height: 36px;
+
+    flex: 0 0 auto;
+  }
+
+
+  /* ==========================================================
+     MOBILE MODAL
+     ========================================================== */
 
   .modal-overlay {
     align-items: flex-start;
@@ -1423,9 +1773,13 @@ td button {
 
   .modal-header {
     position: sticky;
+
     top: -20px;
 
-    margin: -20px -16px 18px;
+    margin:
+      -20px
+      -16px
+      18px;
 
     padding: 14px 16px;
 
@@ -1444,6 +1798,7 @@ td button {
 
   .modal-close {
     width: 42px;
+
     height: 42px;
 
     flex-shrink: 0;
@@ -1452,6 +1807,11 @@ td button {
   .modal-body {
     gap: 14px;
   }
+
+
+  /* ----------------------------------------------------------
+     MOBILE FORM
+     ---------------------------------------------------------- */
 
   .field-row {
     grid-template-columns: 1fr;
@@ -1471,8 +1831,9 @@ td button {
     min-height: 120px;
   }
 
+
   /* ----------------------------------------------------------
-     MODAL BUTTONS
+     MOBILE MODAL BUTTONS
      ---------------------------------------------------------- */
 
   .modal-actions {
@@ -1489,17 +1850,20 @@ td button {
     min-height: 46px;
   }
 
+
   /* ----------------------------------------------------------
      TOAST
      ---------------------------------------------------------- */
 
   .toast {
     left: 12px;
+
     right: 12px;
 
     bottom: 12px;
 
     width: auto;
+
     max-width: none;
 
     padding: 13px 15px;
@@ -1507,6 +1871,7 @@ td button {
     font-size: 13px;
   }
 }
+
 
 /* ============================================================
    SMALL PHONES
@@ -1524,19 +1889,29 @@ td button {
     display: none;
   }
 
+
+  /* Navigation */
+
   .sidebar-nav {
     gap: 5px;
 
-    padding: 7px 8px;
+    padding:
+      7px
+      8px;
   }
 
   .nav-item {
     min-height: 38px;
 
-    padding: 7px 12px;
+    padding:
+      7px
+      12px;
 
     font-size: 12.5px;
   }
+
+
+  /* Sign out */
 
   .sidebar-footer {
     padding: 6px 8px;
@@ -1545,11 +1920,21 @@ td button {
   .sidebar-footer .btn-full {
     min-height: 34px;
 
-    padding: 6px 12px;
+    padding:
+      6px
+      12px;
+
+    font-size: 12px;
   }
 
+
+  /* Main */
+
   .main {
-    padding: 18px 12px 32px;
+    padding:
+      18px
+      12px
+      32px;
   }
 
   .main-header {
@@ -1566,13 +1951,8 @@ td button {
     font-size: 12.5px;
   }
 
-  .main-header .btn {
-    min-height: 45px;
-  }
 
-  /* ----------------------------------------------------------
-     STATS
-     ---------------------------------------------------------- */
+  /* Stats */
 
   .stat-grid {
     grid-template-columns:
@@ -1597,43 +1977,53 @@ td button {
     font-size: 11.5px;
   }
 
-  /* ----------------------------------------------------------
-     TABLE
-     ---------------------------------------------------------- */
 
-  [id$="-table"] table {
-    min-width: 700px;
+  /* Cards */
+
+  [id$="-table"] tbody {
+    gap: 10px;
   }
 
-  th,
-  td {
-    padding: 10px 12px;
+  [id$="-table"] tr {
+    border-radius: 9px;
+  }
+
+  [id$="-table"] td {
+    grid-template-columns:
+      minmax(88px, 32%)
+      minmax(0, 1fr);
+
+    gap: 8px;
+
+    padding:
+      10px;
 
     font-size: 12px;
   }
 
-  th {
+  [id$="-table"] td::before {
     font-size: 10px;
   }
 
-  td .cell-text,
-  td .text-wrap,
-  td .read-more-text,
-  td .description {
-    max-width: 210px;
+
+  /* Action buttons */
+
+  .row-actions {
+    gap: 6px;
   }
 
-  td button {
-    min-height: 36px;
+  .row-actions .btn {
+    min-height: 38px;
 
-    padding: 7px 10px;
+    padding:
+      7px
+      10px;
 
-    font-size: 12px;
+    font-size: 11.5px;
   }
 
-  /* ----------------------------------------------------------
-     MODAL
-     ---------------------------------------------------------- */
+
+  /* Modal */
 
   .modal-overlay {
     padding: 6px;
@@ -1642,7 +2032,9 @@ td button {
   .modal {
     max-height: calc(100vh - 12px);
 
-    padding: 18px 14px;
+    padding:
+      18px
+      14px;
 
     border-radius: 10px;
   }
@@ -1650,9 +2042,14 @@ td button {
   .modal-header {
     top: -18px;
 
-    margin: -18px -14px 16px;
+    margin:
+      -18px
+      -14px
+      16px;
 
-    padding: 13px 14px;
+    padding:
+      13px
+      14px;
   }
 
   .modal-header h2 {
@@ -1672,6 +2069,7 @@ td button {
   }
 }
 
+
 /* ============================================================
    VERY SMALL PHONES
    ============================================================ */
@@ -1684,17 +2082,22 @@ td button {
 
   .sidebar-nav {
     padding-left: 6px;
+
     padding-right: 6px;
   }
 
   .nav-item {
-    padding: 7px 10px;
+    padding:
+      7px
+      10px;
 
     font-size: 12px;
   }
 
+
   .main {
     padding-left: 10px;
+
     padding-right: 10px;
   }
 
@@ -1702,8 +2105,10 @@ td button {
     font-size: 20px;
   }
 
+
   .stat-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
 
     gap: 8px;
   }
@@ -1720,28 +2125,52 @@ td button {
     font-size: 11px;
   }
 
-  [id$="-table"] table {
-    min-width: 680px;
+
+  /* Mobile cards */
+
+  [id$="-table"] tbody {
+    gap: 8px;
   }
 
-  th,
-  td {
-    padding: 9px 10px;
+  [id$="-table"] tr {
+    border-radius: 8px;
   }
+
+  [id$="-table"] td {
+    grid-template-columns:
+      80px
+      minmax(0, 1fr);
+
+    padding:
+      9px;
+
+    font-size: 11.5px;
+  }
+
+  [id$="-table"] td::before {
+    font-size: 9.5px;
+  }
+
+
+  /* Modal */
 
   .modal {
     padding-left: 12px;
+
     padding-right: 12px;
   }
 
   .modal-header {
     margin-left: -12px;
+
     margin-right: -12px;
 
     padding-left: 12px;
+
     padding-right: 12px;
   }
 }
+
 
 /* ============================================================
    LANDSCAPE PHONES
@@ -1755,11 +2184,13 @@ td button {
 
   .brand-mark {
     padding-top: 9px;
+
     padding-bottom: 9px;
   }
 
   .sidebar-nav {
     padding-top: 5px;
+
     padding-bottom: 5px;
   }
 
@@ -1776,6 +2207,7 @@ td button {
   }
 }
 
+
 /* ============================================================
    REDUCE MOTION
    ============================================================ */
@@ -1790,7 +2222,9 @@ td button {
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+
     animation-duration: 0.01ms !important;
+
     animation-iteration-count: 1 !important;
   }
 }
