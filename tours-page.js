@@ -14,6 +14,24 @@ let state = {
   page: 1
 };
 
+// Filters sent from the homepage "Plan Your Trip" box. Read once at load
+// (this file's DOMContentLoaded handler can run twice on the tours page).
+// URL params win; sessionStorage is a backup in case the host dropped the
+// query string. Only consumed on the tours page (the one with the grid).
+const PLAN_FILTERS = (function () {
+  if (!document.getElementById('tourListingGrid')) return {};
+  const params = new URLSearchParams(window.location.search);
+  let f = { dest: params.get('dest'), days: params.get('days'), budget: params.get('budget') };
+  try {
+    if (!f.dest && !f.days && !f.budget) {
+      const saved = JSON.parse(sessionStorage.getItem('planFilters') || 'null');
+      if (saved) f = saved;
+    }
+    sessionStorage.removeItem('planFilters');
+  } catch (e) {}
+  return f;
+})();
+
 function formatPKR(n) { return "Rs " + n.toLocaleString("en-PK"); }
 
 // The tours table has no length_group column, so this is computed here
@@ -81,9 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Apply filters passed from the homepage "Plan Your Trip" box,
   // e.g. tours.html?dest=Naran&days=5&budget=28000
   function applyUrlFilters() {
-    const params = new URLSearchParams(window.location.search);
-
-    const dest = params.get('dest');
+    const dest = PLAN_FILTERS.dest;
     if (dest) {
       const cb = [...document.querySelectorAll('.destCheck')]
         .find(c => c.value.toLowerCase() === dest.toLowerCase());
@@ -97,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    const days = parseInt(params.get('days'), 10);
+    const days = parseInt(PLAN_FILTERS.days, 10);
     if (days) {
       const group = lengthGroup(days);
       const cb = document.querySelector('.lengthCheck[value="' + group + '"]');
@@ -107,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    const budget = parseInt(params.get('budget'), 10);
+    const budget = parseInt(PLAN_FILTERS.budget, 10);
     if (budget && priceRange) {
       priceRange.value = budget;
       state.maxPrice = Number(priceRange.value);
