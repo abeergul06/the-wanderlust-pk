@@ -7,7 +7,7 @@
 
 let state = {
   search: "",
-  maxPrice: 70000,
+  maxPrice: 130000,
   length: new Set(),
   dests: new Set(),
   sort: "latest",
@@ -342,10 +342,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
-      state = { search: "", maxPrice: 70000, length: new Set(), dests: new Set(), sort: "latest", page: 1 };
+      state = { search: "", maxPrice: 130000, length: new Set(), dests: new Set(), sort: "latest", page: 1 };
       if (search) search.value = "";
       if (sort) sort.value = "latest";
-      if (priceRange) priceRange.value = 70000;
+      if (priceRange) priceRange.value = priceRange.max;
       document.querySelectorAll('.lengthCheck, .destCheck').forEach(cb => cb.checked = false);
       render();
     });
