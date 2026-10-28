@@ -278,9 +278,12 @@ async function loadTours() {
     const container = document.getElementById('tours-table');
     if (!tours.length) return (container.innerHTML = emptyState('No tours yet. Click "Add tour" to create one.'));
 
-    container.innerHTML = renderTable(['Title', 'Days', 'Route', 'Price (head)', 'Active', ''], tours.map((t) => [
-      escapeHtml(t.title), `${t.days}D/${t.nights}N`, escapeHtml(t.route || '—'),
+    // Columns: Title | Days | Price (head) | Price (couple) | Active | actions
+    container.innerHTML = renderTable(['Title', 'Days', 'Price (head)', 'Price (couple)', 'Active', ''], tours.map((t) => [
+      escapeHtml(t.title),
+      `${t.days}D/${t.nights}N`,
       fmtMoney(t.priceHead),
+      fmtMoney(t.priceCouple),
       activeBadge(t.active),
       `<div class="row-actions">
          <button class="btn btn-ghost btn-sm" onclick="editTour('${t.id}')">Edit</button>
