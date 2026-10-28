@@ -398,10 +398,18 @@ async function loadGallery() {
     galleryCache = items;
     const container = document.getElementById('gallery-table');
     if (!items.length) return (container.innerHTML = emptyState('No photos yet.'));
-    container.innerHTML = renderTable(['Destination', 'Order', 'Active', ''], items.map((g) => [
-      escapeHtml(g.destinationSlug), g.order,
+    // Columns: Photo | Destination | Order | Active | actions
+    container.innerHTML = renderTable(['Photo', 'Destination', 'Order', 'Active', ''], items.map((g) => [
+      g.imageUrl
+        ? `<img src="${escapeHtml(g.imageUrl)}" alt="" style="width:64px; height:48px; object-fit:cover; border-radius:6px; display:block;" />`
+        : '—',
+      escapeHtml(g.destinationSlug),
+      g.order,
       activeBadge(g.active),
-      `<div class="row-actions"><button class="btn btn-ghost btn-sm" onclick="editGallery('${g.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteGallery('${g.id}')">Delete</button></div>`,
+      `<div class="row-actions">
+         <button class="btn btn-ghost btn-sm" onclick="editGallery('${g.id}')">Edit</button>
+         <button class="btn btn-danger btn-sm" onclick="deleteGallery('${g.id}')">Delete</button>
+       </div>`,
     ]));
   } catch (err) { toast(err.message, true); }
 }
