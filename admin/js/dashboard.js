@@ -401,7 +401,7 @@ async function loadGallery() {
     // Columns: Photo | Destination | Order | Active | actions
     container.innerHTML = renderTable(['Photo', 'Destination', 'Order', 'Active', ''], items.map((g) => [
       g.imageUrl
-        ? `<img src="${escapeHtml(g.imageUrl)}" alt="" style="width:64px; height:48px; object-fit:cover; border-radius:6px; display:block;" />`
+        ? `<img class="gallery-thumb" src="${escapeHtml(g.imageUrl)}" alt="" />`
         : '—',
       escapeHtml(g.destinationSlug),
       g.order,
