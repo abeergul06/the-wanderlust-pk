@@ -1,268 +1,62 @@
+
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Dashboard — The Wanderlust.pk Admin</title>
-
-  <link rel="stylesheet" href="./css/style.css" />
+  <title>Sign in — The Wanderlust Vibe Admin</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
-  <div class="app">
+  <div class="login-shell">
+    <div class="login-card">
+      <h1 class="login-brand">The Wanderlust Vibe</h1>
+      <p class="login-sub">
+        Sign in to manage packages, bookings and messages.
+      </p>
 
-    <!-- ======================================================
-         SIDEBAR
-         ====================================================== -->
-    <aside class="sidebar">
+      <p
+        id="error"
+        class="error-text"
+        role="alert"
+        aria-live="polite"
+      ></p>
 
-      <div class="brand-mark">
-        <span>The Wanderlust.pk</span>
-        <small>Admin Panel</small>
-      </div>
+      <form id="login-form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            required
+            autocomplete="username"
+          />
+        </div>
 
-      <nav class="sidebar-nav" aria-label="Admin navigation">
-
-        <button class="nav-item active" data-view="overview">
-          <span>Overview</span>
-        </button>
-
-        <button class="nav-item" data-view="destinations">
-          <span>Destinations</span>
-        </button>
-
-        <button class="nav-item" data-view="tours">
-          <span>Tours</span>
-        </button>
-
-        <button class="nav-item" data-view="gallery">
-          <span>Gallery</span>
-        </button>
-
-        <button class="nav-item" data-view="feedback">
-          <span>Feedback</span>
-        </button>
-
-        <button class="nav-item" data-view="contact">
-          <span>Contact</span>
-          <span class="count hidden" id="nav-count-contact"></span>
-        </button>
-
-      </nav>
-
-      <div class="sidebar-footer">
-
-        <div class="who" id="who">
-          —
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            required
+            autocomplete="current-password"
+          />
         </div>
 
         <button
-          class="btn btn-ghost btn-full"
-          id="logout-btn"
-          type="button"
+          type="submit"
+          class="btn btn-full"
+          id="submit-btn"
         >
-          Sign out
+          Sign in
         </button>
+      </form>
 
-      </div>
-
-    </aside>
-
-
-    <!-- ======================================================
-         MAIN CONTENT
-         ====================================================== -->
-    <main class="main">
-
-      <!-- ================= OVERVIEW ================= -->
-      <section class="view" id="view-overview">
-
-        <div class="main-header">
-          <div>
-            <h1>Overview</h1>
-            <p>
-              A quick look at what's happening across the site.
-            </p>
-          </div>
-        </div>
-
-        <div class="stat-grid" id="stat-grid"></div>
-
-      </section>
-
-
-      <!-- ================= DESTINATIONS ================= -->
-      <section class="view hidden" id="view-destinations">
-
-        <div class="main-header">
-
-          <div>
-            <h1>Destinations</h1>
-            <p>
-              Regions shown on the Destinations page.
-            </p>
-          </div>
-
-          <button
-            class="btn"
-            id="add-destination-btn"
-            type="button"
-          >
-            Add destination
-          </button>
-
-        </div>
-
-        <div class="panel">
-          <div id="destinations-table"></div>
-        </div>
-
-      </section>
-
-
-      <!-- ================= TOURS ================= -->
-      <section class="view hidden" id="view-tours">
-
-        <div class="main-header">
-
-          <div>
-            <h1>Tours</h1>
-            <p>
-              Fixed departures shown on the Tours page.
-            </p>
-          </div>
-
-          <button
-            class="btn"
-            id="add-tour-btn"
-            type="button"
-          >
-            Add tour
-          </button>
-
-        </div>
-
-        <div class="panel">
-          <div id="tours-table"></div>
-        </div>
-
-      </section>
-
-
-      <!-- ================= GALLERY ================= -->
-      <section class="view hidden" id="view-gallery">
-
-        <div class="main-header">
-
-          <div>
-            <h1>Gallery</h1>
-            <p>
-              Photos shown on the Gallery page.
-            </p>
-          </div>
-
-          <button
-            class="btn"
-            id="add-gallery-btn"
-            type="button"
-          >
-            Add photo
-          </button>
-
-        </div>
-
-        <div class="panel">
-          <div id="gallery-table"></div>
-        </div>
-
-      </section>
-
-
-      <!-- ================= FEEDBACK ================= -->
-      <section class="view hidden" id="view-feedback">
-
-        <div class="main-header">
-
-          <div>
-            <h1>Feedback</h1>
-            <p>
-              Approve feedback to publish it as testimonial.
-            </p>
-          </div>
-
-        </div>
-
-        <div class="panel">
-          <div id="feedback-table"></div>
-        </div>
-
-      </section>
-
-
-      <!-- ================= CONTACT ================= -->
-      <section class="view hidden" id="view-contact">
-
-        <div class="main-header">
-
-          <div>
-            <h1>Contact messages</h1>
-            <p>
-              Messages submitted through the website.
-            </p>
-          </div>
-
-        </div>
-
-        <div class="panel">
-          <div id="contact-table"></div>
-        </div>
-
-      </section>
-
-    </main>
-
+      <p class="hint">No account yet?</p>
+    </div>
   </div>
 
-
-  <!-- ======================================================
-       MODAL
-       dashboard.js dynamically injects forms here.
-       ====================================================== -->
-  <div
-    class="modal-overlay hidden"
-    id="modal-overlay"
-    aria-hidden="true"
-  >
-
-    <div
-      class="modal"
-      id="modal-content"
-      role="dialog"
-      aria-modal="true"
-    ></div>
-
-  </div>
-
-
-  <!-- ======================================================
-       TOAST
-       ====================================================== -->
-  <div
-    class="toast"
-    id="toast"
-    role="status"
-    aria-live="polite"
-  ></div>
-
-
-  <!-- ======================================================
-       JAVASCRIPT
-       ====================================================== -->
-  <script src="./js/api.js"></script>
-  <script src="./js/dashboard.js"></script>
-
+  <script src="js/api.js"></script>
+  <script src="js/login.js"></script>
 </body>
-
 </html>
