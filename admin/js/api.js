@@ -1,4 +1,6 @@
-// Point directly to your Express backend port
+// API helper for the admin frontend.
+// Public authentication failures must stay on the login form so the page can
+// display an inline message instead of redirecting/reloading on every 401.
 const API_BASE = 'https://wanderlust-backend-lyart.vercel.app/api';
 
 const Auth = {
@@ -25,41 +27,27 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  if (res.status === 401) {
+  const publicAuthRequest = path === '/auth/login' || path === '/auth/register';
+  if (res.status === 401 && !publicAuthRequest) {
     Auth.clearSession();
-    // Relative path — matches login.js's redirect and works regardless of
-    // which sub-path the admin panel is deployed under. The old hardcoded
-    // '/admin/login.html' broke this redirect on any deployment where the
-    // panel isn't served from the site root.
     window.location.href = './login.html';
     throw new Error('Session expired. Please sign in again.');
   }
 
   if (res.status === 204) return null;
-
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message || data.error || 'Request failed.');
   return data;
 }
 
-// Uploads a single image file (from an <input type="file">) and returns its URL.
-// Kept separate from apiRequest because file uploads must NOT set
-// Content-Type: application/json — the browser sets the correct
-// multipart boundary itself when we pass a FormData body.
+// Uploads a single image file. Keep multipart Content-Type browser-managed.
 async function uploadImage(file) {
   const formData = new FormData();
   formData.append('image', file);
-
   const headers = {};
   const token = Auth.getToken();
   if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const res = await fetch(`${API_BASE}/upload`, {
-    method: 'POST',
-    headers,
-    body: formData,
-  });
-
+  const res = await fetch(`${API_BASE}/upload`, { method: 'POST', headers, body: formData });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message || data.error || 'Upload failed.');
   return data.url;
