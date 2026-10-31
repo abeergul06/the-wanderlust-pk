@@ -1,36 +1,63 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign in — The Wanderlust.pk Admin</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183b35">
+  <title>Admin Sign In — The Wanderlust Vibe</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
 </head>
-<body>
-  <div class="login-shell">
-    <div class="login-card">
-      <h1 class="login-brand">The Wanderlust.pk</h1>
-      <p class="login-sub">Sign in to manage packages, bookings and messages.</p>
-
-      <p id="error" class="error-text"></p>
-
-      <form id="login-form">
-        <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" required autocomplete="username" />
-        </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input type="password" id="password" required autocomplete="current-password" />
-        </div>
-        <button type="submit" class="btn btn-full" id="submit-btn">Sign in</button>
-      </form>
-
-      <p class="hint">No account yet?</p>
+<body class="auth-page">
+<main class="auth-shell">
+  <section class="auth-visual" aria-label="The Wanderlust Vibe">
+    <div class="visual-content">
+      <a class="brand" href="../index.html"><span class="brand-mark">W</span><span>The Wanderlust Vibe</span></a>
+      <div class="visual-copy">
+        <span class="eyebrow">THE JOURNEY STARTS HERE</span>
+        <h1> Explore - Discover - Travel </h1>
+      </div>
+      <p class="visual-foot">ADMINISTRATOR PORTAL <span>•</span> PAKISTAN</p>
     </div>
-  </div>
-
-  <script src="js/api.js"></script>
-  <script src="js/login.js"></script>
+  </section>
+  <section class="auth-panel">
+    <div class="auth-card">
+      <div class="mobile-brand"><span class="brand-mark">W</span><span>The Wanderlust Vibe</span></div>
+      <div id="login-view">
+        <span class="eyebrow form-eyebrow">WELCOME BACK</span>
+        <h2>Sign in to your account</h2>
+        <p class="form-intro">Access your dashboard to manage tours, bookings and inquiries.</p>
+        <div id="login-error" class="notice notice-error" role="alert" aria-live="polite" hidden></div>
+        <form id="login-form" novalidate>
+          <div class="field"><label for="email">Email address</label><input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="username" required maxlength="254"></div>
+          <div class="field"><label for="password">Password</label><div class="password-wrap"><input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required><button class="password-toggle" type="button" data-toggle-password="password" aria-label="Show password" aria-pressed="false">Show</button></div></div>
+          <button type="submit" class="auth-button" id="submit-btn"><span>Sign in</span><span aria-hidden="true">→</span></button>
+        </form>
+        <div class="invite-prompt"><span>Have an administrator invitation?</span><button type="button" class="text-button" id="show-register">Create your account</button></div>
+        <p class="security-note">◆ Restricted access. Invitation required for new administrators.</p>
+      </div>
+      <div id="register-view" hidden>
+        <span class="eyebrow form-eyebrow">INVITED ADMINISTRATOR</span>
+        <h2>Create your account</h2>
+        <p class="form-intro">Use the invitation code provided by your administrator.</p>
+        <div id="register-error" class="notice notice-error" role="alert" aria-live="polite" hidden></div>
+        <div id="register-success" class="notice notice-success" role="status" aria-live="polite" hidden></div>
+        <form id="register-form" novalidate>
+          <div class="field"><label for="register-name">Full name</label><input type="text" id="register-name" placeholder="Your full name" autocomplete="name" required maxlength="100"></div>
+          <div class="field"><label for="register-email">Email address</label><input type="email" id="register-email" placeholder="you@example.com" autocomplete="email" required maxlength="254"></div>
+          <div class="field"><label for="invite-code">Invitation code</label><input type="text" id="invite-code" placeholder="Enter your invitation code" autocomplete="one-time-code" required maxlength="200"></div>
+          <div class="field"><label for="register-password">Create password</label><div class="password-wrap"><input type="password" id="register-password" placeholder="At least 8 characters" autocomplete="new-password" required minlength="8"><button class="password-toggle" type="button" data-toggle-password="register-password" aria-label="Show password" aria-pressed="false">Show</button></div></div>
+          <div class="field"><label for="confirm-password">Confirm password</label><div class="password-wrap"><input type="password" id="confirm-password" placeholder="Enter your password again" autocomplete="new-password" required><button class="password-toggle" type="button" data-toggle-password="confirm-password" aria-label="Show password" aria-pressed="false">Show</button></div></div>
+          <button type="submit" class="auth-button" id="register-btn"><span>Create account</span><span aria-hidden="true">→</span></button>
+        </form>
+        <div class="invite-prompt"><span>Already have an account?</span><button type="button" class="text-button" id="show-login">Back to sign in</button></div>
+        <p class="security-note">◆ Registration requires a valid, unused invitation.</p>
+      </div>
+      <footer class="auth-footer">© <span id="year"></span> The Wanderlust Vibe. All rights reserved.</footer>
+    </div>
+  </section>
+</main>
+<script src="js/api.js"></script>
+<script src="js/login.js"></script>
 </body>
 </html>
